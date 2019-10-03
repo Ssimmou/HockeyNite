@@ -22,9 +22,6 @@ fun initDB() {
 fun main() = runBlocking<Unit> {
 
     initDB()
-
-
-
     launch{
         val port = 6780
         val threadPoolSize = 4
