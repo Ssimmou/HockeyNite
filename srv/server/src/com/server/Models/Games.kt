@@ -1,0 +1,37 @@
+package com.example.Data
+
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.joda.time.DateTime
+
+object Game : Table("game") {
+    val id = integer("id").primaryKey().autoIncrement();
+    val team1Id = (integer("team1Id")).nullable()
+    val team2Id = (integer("team2Id")).nullable()
+    val date = (date("date").nullable())
+}
+data class Games(val id:Int, val team1Id: Int?, val team2Id: Int?, val date: DateTime?) {
+
+}
+
+data class DetailGame(val team1Name: String, val team2Name: String, val date: DateTime?, val team1Goals : Int, val team2Goals: Int, val team1Penalties : Int, val team2Penalties: Int)
+
+
+fun getGame(id : Int): DetailGame? {
+    var team1Id : Int = 0
+    var team2Id : Int = 0
+    var detail : DetailGame? = null
+    transaction {
+        var res = Game.select{
+            Game.id.eq(id)
+        }
+        for(row in res){
+            detail = DetailGame(getTeam(row[Game.team1Id] as Int), getTeam(row[Game.team2Id] as Int), row[Game.date],
+                getGoalsInMatch(id, row[Game.team1Id]), getGoalsInMatch(id, row[Game.team2Id]),
+                getPenalitiesInMatch(id, row[Game.team1Id]), getPenalitiesInMatch(id, row[Game.team2Id])
+            )
+        }
+    }
+    return detail
+}
