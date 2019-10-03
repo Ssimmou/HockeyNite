@@ -1,6 +1,4 @@
-package com.server.com.server.Data
-
-import com.example.Data.Game
+package Models
 
 data class ListGame(val listGame: Array<Game>){
     

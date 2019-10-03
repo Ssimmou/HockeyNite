@@ -1,21 +1,14 @@
-import com.example.Data.DetailGame
-import com.example.Data.Games
-import com.example.Data.getTeam
-import com.google.gson.GsonBuilder
+import Models.Games
+
 import com.google.gson.internal.LinkedTreeMap
-import kotlinx.coroutines.delay
 import java.io.BufferedReader
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 
 
-
-import java.io.ByteArrayOutputStream
 import java.io.InputStreamReader
-import java.io.ObjectOutputStream
 import java.net.UnknownHostException
-import java.util.*
 import kotlin.collections.ArrayList
 
 
