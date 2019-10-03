@@ -9,6 +9,7 @@ import com.server.com.server.Request
 import com.server.com.server.Servers.Serialize
 import com.server.com.server.Servers.unSerialize
 import kotlinx.coroutines.delay
+import placeBet
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.io.IOException
@@ -32,6 +33,13 @@ class UDPHandler(datagram: DatagramPacket, sock: DatagramSocket) : Runnable {
         if(message.option == Request.Option.detail){
             var id = (message.argument?.get(0) as Double).toInt()
             rep = getGame(id)?.let { Reply(datagramPacket.address, datagramPacket.port, it) }
+        }
+        if(message.option == Request.Option.betInfo){
+            println(message.argument)
+            var id =(message.argument?.get(0) as Double).toInt()
+            var choice = (message.argument?.get(1) as Double).toInt()
+            var bet = (message.argument?.get(2) as Double).toFloat()
+            rep = Reply(datagramPacket.address, datagramPacket.port, placeBet(id, choice, bet))
         }
         if (rep != null) {
             send(rep)

@@ -9,6 +9,7 @@ import java.net.InetAddress
 
 import java.io.InputStreamReader
 import java.net.UnknownHostException
+import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -132,5 +133,36 @@ class Communication {
         println("Goals : \t\t" + (detail.get("team1Goals") as Double).toInt() + "-" + (detail.get("team2Goals") as Double).toInt())
         println("Penalties : \t\t" + (detail.get("team1Penalties") as Double).toInt() + "-" + (detail.get("team2Penalties") as Double).toInt())
 
+        println("You want to bet ? ")
+        println("0 = draw")
+        println("1 = home team to win")
+        println("2 = away team to win")
+        println("3 = quit")
+        val sc = Scanner(System.`in`)
+        var choix = sc.nextInt()
+        if(choix > 2)
+            return;
+        println("The amount ? ")
+        var amount = sc.nextFloat()
+        aSocket!!.close()
+
+        play(id, choix, amount)
+    }
+
+    private fun play(idGame: Int, choice: Int, bet: Float) {
+        aSocket = DatagramSocket(this.clientPort)
+        val ask = this.adress?.let { Request().craftBet(it, this.serveurPort, idGame, choice, bet) }
+        val stream = ask?.let { serialize(it) }
+        var datagram = ask?.destinationPort?.let {
+            stream?.size?.let { it1 ->
+                DatagramPacket(
+                    stream,
+                    it1,
+                    ask.destination,
+                    it
+                )
+            }
+        }
+        aSocket!!.send(datagram) // emission non-bloquante
     }
 }

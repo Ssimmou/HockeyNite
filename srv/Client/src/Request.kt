@@ -47,20 +47,17 @@ class Request : Serializable{
         return request
     }
 
-    /*@Synchronized
-    fun craftGetBetInfo(adress: InetAddress, port: Int, idMatch: Int, idBet: String): Request {
+    fun craftBet(adress: InetAddress, port: Int, idMatch: Int, choice : Int, idBet: Float): Request {
         val request = Request()
-        request.methode = methodes.betInfo
-        val arg = arrayOf<Any>(idMatch, idBet)
+        request.option = Option.betInfo
+        val arg = arrayListOf<Any>(idMatch, choice, idBet)
         request.argument = arg
-        request.setDestinationPort(port)
-        request.setDestination(adress)
-        request.setNumero(numRequest)
-        incrementNumRequest()
+        request.destinationPort = (port)
+        request.destination = (adress)
         return request
     }
 
-    internal fun incrementNumRequest() {
+    /*internal fun incrementNumRequest() {
         if (numRequest == MAX_NUM) {
             numRequest = 0
         }
