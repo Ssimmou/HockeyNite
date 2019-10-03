@@ -1,9 +1,15 @@
-package com.example.Data
-
+package Models
 import org.jetbrains.exposed.sql.Table
-
 import org.joda.time.DateTime
 
+/**Game data Class
+ * @author Soufiane SIMMOU
+ * @version V0.0.0
+ */
+
+/**
+ * Setting up the table skeleton for the dataBase
+ */
 object Game : Table("game") {
     val id = integer("id").primaryKey().autoIncrement();
     val team1Id = (integer("team1Id")).nullable()
