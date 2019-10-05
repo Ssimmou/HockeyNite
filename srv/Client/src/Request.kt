@@ -6,14 +6,11 @@ import java.net.InetAddress
 
 class Request : Serializable{
 
-    //protected var type: Int = 0
-
-    var messageID: Int = 0
-
     var destination: InetAddress? = null
     var destinationPort: Int = 0
     var argument: ArrayList<Any>? = null
     var option: Option? = null
+
     enum class Option {
         list, detail, betInfo
     }
@@ -39,9 +36,8 @@ class Request : Serializable{
     fun craftGetMatchDetail(adress: InetAddress, port: Int, idMatch: Int): Request {
         val request = Request()
         request.option = Option.detail
-        val arg = ArrayList<Any>()
-        arg.add(idMatch)
-        request.argument = arg
+        request.argument = ArrayList<Any>()
+        argument?.add(idMatch)
         request.destinationPort = (port)
         request.destination = (adress)
         return request
@@ -57,10 +53,4 @@ class Request : Serializable{
         return request
     }
 
-    /*internal fun incrementNumRequest() {
-        if (numRequest == MAX_NUM) {
-            numRequest = 0
-        }
-        numRequest++
-    }*/
 }

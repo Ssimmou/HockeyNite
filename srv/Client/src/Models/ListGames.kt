@@ -1,5 +1,8 @@
-package Models
+package com.server.com.server.Data
 
-data class ListGame(val listGame: Array<Game>){
-    
+import com.example.Data.Games
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
+
+class ListGames{
 }

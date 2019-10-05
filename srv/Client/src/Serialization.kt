@@ -22,7 +22,6 @@ fun unSerializeReply(packet: DatagramPacket) : Reply {
 
 fun serialize(request : Request): ByteArray? {
     val gson = GsonBuilder().setPrettyPrinting().create()
-
     val baos = ByteArrayOutputStream()
     val oos = ObjectOutputStream(baos)
     oos.writeBytes(gson.toJson(request))

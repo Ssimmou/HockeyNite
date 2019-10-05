@@ -1,4 +1,4 @@
-import Models.Games
+import com.example.Data.Games
 
 import com.google.gson.internal.LinkedTreeMap
 import java.io.BufferedReader

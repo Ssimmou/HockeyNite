@@ -4,6 +4,7 @@ import com.example.Data.Game
 import com.example.Data.Games
 import com.server.Servers.TCPServer
 import com.server.Servers.UDPServer
+import com.server.com.server.Servers.GamesMAJ
 import javafx.application.Application.launch
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.launch
@@ -22,6 +23,11 @@ fun initDB() {
 fun main() = runBlocking<Unit> {
 
     initDB()
+    launch{
+        var gameMaJ = GamesMAJ()
+        gameMaJ.start()
+    }
+
     launch{
         val port = 6780
         val threadPoolSize = 4
