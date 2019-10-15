@@ -45,6 +45,25 @@ data class Games(val id:Int, val team1Id: Int?, val team2Id: Int?, val date: Str
             }
             return detail
         }
+        @JvmStatic
+        @Synchronized fun getResult(gameId: Int): Int {
+            var team1Goals : Int = 0
+            var team2Goals : Int = 0
+            transaction {
+                var res = Game.select{
+                    Game.id.eq(gameId)
+                }
+                for(row in res){
+                    team1Goals = Goals.getGoalsInMatch(gameId, row[Game.team1Id])
+                    team2Goals = Goals.getGoalsInMatch(gameId, row[Game.team2Id])
+                }
+            }
+            if(team1Goals == team2Goals)
+                return 0
+            if(team1Goals > team2Goals)
+                return 1
+            return 2
+        }
     }
 
 }

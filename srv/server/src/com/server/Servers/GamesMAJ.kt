@@ -3,13 +3,8 @@ package com.server.com.server.Servers
 import InformeChanges
 import Scope
 import com.example.Data.*
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.DataInputStream
-import java.io.DataOutputStream
-import java.io.PrintWriter
-import java.net.Socket
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -60,7 +55,7 @@ class GamesMAJ(var app : Scope) {
         Penalties.addPenalty(gameId, teamId, playerId)
         if(app.list.containsKey(gameId as Integer)){
             for(socket in app.list.get(gameId as Integer)!!){
-                threadPool.execute(InformeChanges(socket, gameId))
+                threadPool.execute(InformeChanges(socket, gameId, 0))
             }
         }
     }
@@ -71,7 +66,7 @@ class GamesMAJ(var app : Scope) {
         Periods.periodEnded(gameId, false)
         if(app.list.containsKey(gameId as Integer)){
             for(socket in app.list.get(gameId as Integer)!!){
-                threadPool.execute(InformeChanges(socket, gameId))
+                threadPool.execute(InformeChanges(socket, gameId, 0))
             }
         }
     }
@@ -85,7 +80,7 @@ class GamesMAJ(var app : Scope) {
         Goals.addGoal(gameId, teamId, playerId)
         if(app.list.containsKey(gameId as Integer)){
             for(socket in app.list.get(gameId as Integer)!!){
-                threadPool.execute(InformeChanges(socket, gameId))
+                threadPool.execute(InformeChanges(socket, gameId, 0))
             }
         }
     }
@@ -98,7 +93,7 @@ class GamesMAJ(var app : Scope) {
         Games.gameEnded(gameId)
         if(app.list.containsKey(gameId as Integer)){
             for(socket in app.list.get(gameId as Integer)!!){
-                threadPool.execute(InformeChanges(socket, gameId))
+                threadPool.execute(InformeChanges(socket, gameId, 1))
             }
         }
     }

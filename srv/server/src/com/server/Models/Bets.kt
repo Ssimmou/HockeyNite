@@ -40,6 +40,34 @@ data class Bets(val id: Int, val idGame : Int, val choice :Int, val bet : Float)
             }
             return "done"
         }
+
+        fun getWinningSum(gameId: Int, gameRes: Int): Double {
+            var sum : Double = 0.0
+            transaction {
+                var res = Bet.select {
+                    Bet.idGame.eq(gameId)and Bet.choice.eq(gameRes)
+                }
+                for(row in res){
+                    sum += row[Bet.bet]
+                }
+            }
+            println("winning sum = " + sum)
+            return sum
+        }
+
+        fun getSum(gameId: Int): Double {
+            var sum : Double = 0.0
+            transaction {
+                var res = Bet.select {
+                    Bet.idGame.eq(gameId)
+                }
+                for(row in res){
+                    sum += row[Bet.bet]
+                }
+            }
+            println("sum = " + sum)
+            return sum
+        }
     }
 }
 

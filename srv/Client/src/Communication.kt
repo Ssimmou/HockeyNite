@@ -1,3 +1,4 @@
+import Models.Result
 import com.example.Data.DetailGame
 import com.example.Data.Games
 import com.google.gson.GsonBuilder
@@ -204,8 +205,28 @@ class Communication {
             println("Goals : \t\t" + gameDetail.team1Goals + "-" + gameDetail.team2Goals)
             println("Penalties : \t\t" + (gameDetail.team1Penalties) + "-" + (gameDetail.team2Penalties))
 
+            println("ENDED = " + gameDetail.isEnded)
             if(gameDetail.isEnded == 1){
+                var betRes = ""
+                while (sc.hasNext()) {
 
+                    var str = sc.nextLine() //We wait for the object
+                    betRes += str
+                    str = str.trim()
+                    if (str == "}")
+                        break
+                    println(betRes)
+                }
+                val gson =  GsonBuilder().setPrettyPrinting().create()
+                var res: Result =  gson.fromJson(betRes, Result::class.java)
+                var gain : Double = 0.0
+                if(res.res == bet.choice) {
+                    gain = bet.bet / res.winningSum
+                    gain = gain * res.sum
+                }
+                else
+                    gain = 0.0
+                println("wa = " + gain)
             }
         }
         sClient.close()
