@@ -1,5 +1,6 @@
 package com.server.Servers
 
+import Scope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -12,7 +13,7 @@ import java.util.concurrent.ExecutorService
 import kotlin.coroutines.coroutineContext
 
 
-class UDPServer(port: Int, threadPoolSize: Int) {
+class UDPServer(port: Int, threadPoolSize: Int, app : Scope) {
 
     private var serverSocket: DatagramSocket? = null
     private var poolSize: Int = 0
@@ -29,7 +30,6 @@ class UDPServer(port: Int, threadPoolSize: Int) {
         val buffer = ByteArray(4000)
         for (i in 0..9) {
             val datagram = DatagramPacket(buffer, buffer.size)
-
             serverSocket!!.receive(datagram)
             threadPool.execute(UDPHandler(datagram, serverSocket!!))
         }

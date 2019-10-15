@@ -5,6 +5,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import org.joda.time.DateTime
+import java.util.*
 
 object Game : Table("game") {
     val id = integer("id").primaryKey().autoIncrement();
@@ -13,7 +14,7 @@ object Game : Table("game") {
     val date = (date("date").nullable())
     val ended = (integer("ended"))
 }
-data class Games(val id:Int, val team1Id: Int?, val team2Id: Int?, val date: DateTime?, val ended : Int) {
+data class Games(val id:Int, val team1Id: Int?, val team2Id: Int?, val date: String, val ended : Int) {
     companion object {
 
         @JvmStatic
@@ -36,9 +37,9 @@ data class Games(val id:Int, val team1Id: Int?, val team2Id: Int?, val date: Dat
                     Game.id.eq(id)
                 }
                 for(row in res){
-                    detail = DetailGame(Teams.getTeam(row[Game.team1Id] as Int), Teams.getTeam(row[Game.team2Id] as Int), row[Game.date],
+                    detail = DetailGame(Teams.getTeam(row[Game.team1Id] as Int), Teams.getTeam(row[Game.team2Id] as Int), row[Game.date].toString(),
                         Goals.getGoalsInMatch(id, row[Game.team1Id]), Goals.getGoalsInMatch(id, row[Game.team2Id]),
-                        Penalties.getPenalitiesInMatch(id, row[Game.team1Id]), Penalties.getPenalitiesInMatch(id, row[Game.team2Id])
+                        Penalties.getPenalitiesInMatch(id, row[Game.team1Id]), Penalties.getPenalitiesInMatch(id, row[Game.team2Id]), row[Game.ended]
                     )
                 }
             }
@@ -48,7 +49,7 @@ data class Games(val id:Int, val team1Id: Int?, val team2Id: Int?, val date: Dat
 
 }
 
-data class DetailGame(val team1Name: String, val team2Name: String, val date: DateTime?, val team1Goals : Int, val team2Goals: Int, val team1Penalties : Int, val team2Penalties: Int){
+data class DetailGame(val team1Name: String, val team2Name: String, val date: String, val team1Goals : Int, val team2Goals: Int, val team1Penalties : Int, val team2Penalties: Int, val isEnded : Int){
     companion object{
 
     }

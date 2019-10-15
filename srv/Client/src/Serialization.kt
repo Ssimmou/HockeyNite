@@ -3,6 +3,10 @@ import com.google.gson.GsonBuilder
 import java.io.ByteArrayOutputStream
 import java.io.ObjectOutputStream
 import java.net.DatagramPacket
+import java.io.DataOutputStream
+import java.io.DataInputStream
+
+
 
 fun unSerialize(packet: DatagramPacket) : Request {
     val gson =  GsonBuilder().setPrettyPrinting().create()
@@ -16,6 +20,7 @@ fun unSerializeReply(packet: DatagramPacket) : Reply {
     val gson =  GsonBuilder().setPrettyPrinting().create()
     var response = String(packet.getData(), 0, packet.getLength())
     response = response.subSequence(response.indexOf('{'), response.length) as String
+    println(response)
     var reply: Reply =  gson.fromJson(response, Reply::class.java)
     return reply;
 }

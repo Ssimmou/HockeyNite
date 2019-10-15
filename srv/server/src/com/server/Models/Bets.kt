@@ -1,9 +1,6 @@
 import com.example.Data.Game
 import com.example.Data.Period
-import org.jetbrains.exposed.sql.Query
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object Bet : Table("bet") {
@@ -15,7 +12,7 @@ object Bet : Table("bet") {
 
 data class Bets(val id: Int, val idGame : Int, val choice :Int, val bet : Float){
     companion object{
-        @Synchronized fun placeBet(id : Int, choix : Int, amount : Float) : String{
+        @Synchronized fun placeBet(id: Int, choix: Int, amount: Float) : String{
             println(id)
             println(choix)
             println(amount)
@@ -27,6 +24,7 @@ data class Bets(val id: Int, val idGame : Int, val choice :Int, val bet : Float)
                 }
                 for(row in res!!){
                     count++
+                    println(row[Period.id])
                 }
             }
             println(count)

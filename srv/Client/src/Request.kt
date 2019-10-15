@@ -37,7 +37,7 @@ class Request : Serializable{
         val request = Request()
         request.option = Option.detail
         request.argument = ArrayList<Any>()
-        argument?.add(idMatch)
+        request.argument?.add(idMatch)
         request.destinationPort = (port)
         request.destination = (adress)
         return request

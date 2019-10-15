@@ -1,20 +1,33 @@
+import com.example.Data.DetailGame
 import com.example.Data.Games
+import com.google.gson.GsonBuilder
 
 import com.google.gson.internal.LinkedTreeMap
+import org.joda.time.DateTime
 import java.io.BufferedReader
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
 
 
 import java.io.InputStreamReader
-import java.net.UnknownHostException
 import java.util.*
 import kotlin.collections.ArrayList
+import java.util.logging.Level.SEVERE
+import java.io.IOException
+import java.io.ObjectOutputStream
+import java.io.OutputStream
+import java.io.InputStream
+import java.net.*
+import java.io.DataOutputStream
+import java.io.DataInputStream
+import java.io.PrintWriter
+
+
+
+
 
 
 class Communication {
 
+    private val tcpServeurPort = 1248
     private val TIMEOUT = 5000
     private val MAX_TENTATIVE = 5
 
@@ -64,7 +77,8 @@ class Communication {
         for (i in 0..gameList.size - 1) {
             var team1Id = gameList.get(i).get("team1Id") as Double
             var team2Id = gameList.get(i).get("team2Id") as Double
-            println(Integer.toString(i + 1) + " - " + team1Id.toInt() + " vs " + team2Id.toInt())
+            var date = DateTime.parse(gameList.get(i).get("date") as String)
+            println(Integer.toString(i + 1) + " - " + team1Id.toInt() + " vs " + team2Id.toInt() + " at " + date.toDate().hours + ":" + date.toDate().minutes + " = = " + date.toDate().timezoneOffset )
         }
 
         aSocket!!.close()
@@ -150,19 +164,51 @@ class Communication {
     }
 
     private fun play(idGame: Int, choice: Int, bet: Float) {
-        aSocket = DatagramSocket(this.clientPort)
-        val ask = this.adress?.let { Request().craftBet(it, this.serveurPort, idGame, choice, bet) }
-        val stream = ask?.let { serialize(it) }
-        var datagram = ask?.destinationPort?.let {
-            stream?.size?.let { it1 ->
-                DatagramPacket(
-                    stream,
-                    it1,
-                    ask.destination,
-                    it
-                )
+        var bet = Bets(0, idGame, choice, bet)
+        val sClient = Socket("localhost", tcpServeurPort)
+
+        var `is` = DataInputStream(sClient.getInputStream())
+        var os = DataOutputStream(sClient.getOutputStream())
+
+        val gson = GsonBuilder().setPrettyPrinting().create()
+        val str = gson.toJson(bet) as String
+
+        val pw = PrintWriter(os)
+
+        pw.println(str)
+        pw.flush()
+        var sc = Scanner(`is`)
+        val result = sc.nextInt()
+
+        if (result == 0) {
+            println("Succès pour l'objet b courant")
+        } else if (result == 1) {
+            println("l'ajout à echoué, car la période est plus grande que 2")
+        } else {
+            println("l'ajout à echoué, error de stream")
+        }
+
+        while(true) {
+            var updates = ""
+            while (sc.hasNext()) {
+
+                var str = sc.nextLine() //We wait for the object
+                updates += str
+                str = str.trim()
+                if (str == "}")
+                    break
+            }
+            println(updates)
+            var gameDetail: DetailGame = gson.fromJson(updates, DetailGame::class.java)
+            println("Teams : \t\t" + gameDetail.team1Name as String + " " + gameDetail.team2Name as String)
+            println("Goals : \t\t" + gameDetail.team1Goals + "-" + gameDetail.team2Goals)
+            println("Penalties : \t\t" + (gameDetail.team1Penalties) + "-" + (gameDetail.team2Penalties))
+
+            if(gameDetail.isEnded == 1){
+
             }
         }
-        aSocket!!.send(datagram) // emission non-bloquante
+        sClient.close()
     }
+
 }

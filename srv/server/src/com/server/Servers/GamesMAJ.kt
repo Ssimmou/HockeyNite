@@ -1,13 +1,22 @@
 package com.server.com.server.Servers
 
+import InformeChanges
+import Scope
 import com.example.Data.*
+import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.DataInputStream
+import java.io.DataOutputStream
+import java.io.PrintWriter
+import java.net.Socket
 import java.util.*
+import java.util.concurrent.Executors
 
-class GamesMAJ {
+class GamesMAJ(var app : Scope) {
 
     val sc = Scanner(System.`in`)
+    val threadPool = Executors.newFixedThreadPool(10)
 
     suspend fun start() = withContext(Dispatchers.Default){
         println("GAMESMAJ STARTED")
@@ -49,13 +58,22 @@ class GamesMAJ {
         val playerId = sc.nextInt()
 
         Penalties.addPenalty(gameId, teamId, playerId)
+        if(app.list.containsKey(gameId as Integer)){
+            for(socket in app.list.get(gameId as Integer)!!){
+                threadPool.execute(InformeChanges(socket, gameId))
+            }
+        }
     }
 
     private fun endPeriod() {
         println("Enter the game id : ")
         val gameId = sc.nextInt()
         Periods.periodEnded(gameId, false)
-
+        if(app.list.containsKey(gameId as Integer)){
+            for(socket in app.list.get(gameId as Integer)!!){
+                threadPool.execute(InformeChanges(socket, gameId))
+            }
+        }
     }
 
     private fun addGoal() {
@@ -65,6 +83,11 @@ class GamesMAJ {
         val playerId = sc.nextInt()
 
         Goals.addGoal(gameId, teamId, playerId)
+        if(app.list.containsKey(gameId as Integer)){
+            for(socket in app.list.get(gameId as Integer)!!){
+                threadPool.execute(InformeChanges(socket, gameId))
+            }
+        }
     }
 
 
@@ -73,5 +96,10 @@ class GamesMAJ {
         println("Enter the game id : ")
         val gameId = sc.nextInt()
         Games.gameEnded(gameId)
+        if(app.list.containsKey(gameId as Integer)){
+            for(socket in app.list.get(gameId as Integer)!!){
+                threadPool.execute(InformeChanges(socket, gameId))
+            }
+        }
     }
 }

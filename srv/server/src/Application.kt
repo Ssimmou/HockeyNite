@@ -1,5 +1,6 @@
 package com.server
 
+import Scope
 import com.example.Data.Game
 import com.example.Data.Games
 import com.server.Servers.TCPServer
@@ -12,6 +13,7 @@ import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.net.Socket
 
 
 fun initDB() {
@@ -23,26 +25,26 @@ fun initDB() {
 fun main() = runBlocking<Unit> {
 
     initDB()
-    launch{
-        var gameMaJ = GamesMAJ()
+    val app = Scope()
+    launch {
+        var gameMaJ = GamesMAJ(app)
         gameMaJ.start()
     }
 
-    launch{
+    launch {
         val port = 6780
         val threadPoolSize = 4
-        var udpServer = UDPServer(port, threadPoolSize)
+        var udpServer = UDPServer(port, threadPoolSize, app)
         udpServer.start()
     }
 
-    /*launch{
+    launch {
         val portTCP = 1248
         val threadPoolSizeTCP = 10
-        val tcpServer = TCPServer(portTCP, threadPoolSizeTCP)
+        val tcpServer = TCPServer(portTCP, threadPoolSizeTCP, app)
         tcpServer.start()
-    }*/
+    }
 
 }
-
 
 
