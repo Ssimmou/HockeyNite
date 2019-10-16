@@ -1,5 +1,6 @@
 package com.server.com.server.Servers
 
+import Bets
 import com.google.gson.GsonBuilder
 import com.server.com.server.Request
 import java.io.ByteArrayOutputStream
@@ -22,4 +23,6 @@ fun Serialize(request : Any): ByteArray? {
     oos.close()
     return baos.toByteArray()
 }
+
+
 

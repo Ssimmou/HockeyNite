@@ -1,6 +1,6 @@
 package com.example.Data
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.select
+import com.server.com.server.Models.Player
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object Team : Table("team") {
@@ -8,17 +8,22 @@ object Team : Table("team") {
     val name = Team.varchar("name", length = 50)
 }
 
-data class Teams(val id: Int, val name: String)
-
-fun getTeam(id: Int) : String{
-    var name : String = ""
-    transaction {
-        var res = Team.select {
-            Team.id.eq(id)
-        }
-        for (row in res){
-            name += row[Team.name]
+data class Teams(val id: Int, val name: String){
+    companion object{
+        @JvmStatic
+        @Synchronized
+        fun getTeam(id: Int) : String{
+            var name : String = ""
+            transaction {
+                var res = Team.select {
+                    Team.id.eq(id)
+                }
+                for (row in res){
+                    name += row[Team.name]
+                }
+            }
+            return name
         }
     }
-    return name
 }
+

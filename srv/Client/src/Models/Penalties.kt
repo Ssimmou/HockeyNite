@@ -1,23 +1,11 @@
-package Models
-import org.jetbrains.exposed.sql.Table
-/**Penalties data Class
- * @author Soufiane SIMMOU
- * @version V0.0.0
- */
+package com.example.Data
 
-/**
- * Setting up the table skeleton for the dataBase
- */
-
-object Penalty : Table("penalty") {
-    val id = integer("id").primaryKey().autoIncrement();
-    val chrono = (long("chrono"))
-    val teamId = (integer("teamId") references Team.id).nullable()
-    val periodId = (integer("periodId")references Period.id).nullable()
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
 
 
+
+
+data class Penalties(val id: Int, val teamId: Int, val playerId : Int, val periodId: Int){
 }
-
-
-data class Penalties(val id: Int, val chrono: Long, val teamId: Int, val periodId: Int)
 

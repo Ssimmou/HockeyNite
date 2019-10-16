@@ -69,10 +69,8 @@ object UDPClient {
             commObject.setServeur(aHost, serveurPort, clientPort)
         }
 
-            println("Recuperation de la liste des matchs, veuillez patienter")
-
-            var matchList = commObject.getListGames()
-
+        println("Recuperation de la liste des matchs, veuillez patienter")
+        var matchList = commObject.getListGames()
 
     }
 

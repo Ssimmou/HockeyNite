@@ -1,19 +1,34 @@
-import Models.Games
+import Models.Result
+import com.example.Data.DetailGame
+import com.example.Data.Games
+import com.google.gson.GsonBuilder
 
 import com.google.gson.internal.LinkedTreeMap
+import org.joda.time.DateTime
 import java.io.BufferedReader
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
 
 
 import java.io.InputStreamReader
-import java.net.UnknownHostException
+import java.util.*
 import kotlin.collections.ArrayList
+import java.util.logging.Level.SEVERE
+import java.io.IOException
+import java.io.ObjectOutputStream
+import java.io.OutputStream
+import java.io.InputStream
+import java.net.*
+import java.io.DataOutputStream
+import java.io.DataInputStream
+import java.io.PrintWriter
+
+
+
+
 
 
 class Communication {
 
+    private val tcpServeurPort = 1248
     private val TIMEOUT = 5000
     private val MAX_TENTATIVE = 5
 
@@ -63,7 +78,8 @@ class Communication {
         for (i in 0..gameList.size - 1) {
             var team1Id = gameList.get(i).get("team1Id") as Double
             var team2Id = gameList.get(i).get("team2Id") as Double
-            println(Integer.toString(i + 1) + " - " + team1Id.toInt() + " vs " + team2Id.toInt())
+            var date = DateTime.parse(gameList.get(i).get("date") as String)
+            println(Integer.toString(i + 1) + " - " + team1Id.toInt() + " vs " + team2Id.toInt() + " at " + date.toDate().hours + ":" + date.toDate().minutes + " = = " + date.toDate().timezoneOffset )
         }
 
         aSocket!!.close()
@@ -132,5 +148,88 @@ class Communication {
         println("Goals : \t\t" + (detail.get("team1Goals") as Double).toInt() + "-" + (detail.get("team2Goals") as Double).toInt())
         println("Penalties : \t\t" + (detail.get("team1Penalties") as Double).toInt() + "-" + (detail.get("team2Penalties") as Double).toInt())
 
+        println("You want to bet ? ")
+        println("0 = draw")
+        println("1 = home team to win")
+        println("2 = away team to win")
+        println("3 = quit")
+        val sc = Scanner(System.`in`)
+        var choix = sc.nextInt()
+        if(choix > 2)
+            return;
+        println("The amount ? ")
+        var amount = sc.nextFloat()
+        aSocket!!.close()
+
+        play(id, choix, amount)
     }
+
+    private fun play(idGame: Int, choice: Int, bet: Float) {
+        var bet = Bets(0, idGame, choice, bet)
+        val sClient = Socket("localhost", tcpServeurPort)
+
+        var `is` = DataInputStream(sClient.getInputStream())
+        var os = DataOutputStream(sClient.getOutputStream())
+
+        val gson = GsonBuilder().setPrettyPrinting().create()
+        val str = gson.toJson(bet) as String
+
+        val pw = PrintWriter(os)
+
+        pw.println(str)
+        pw.flush()
+        var sc = Scanner(`is`)
+        val result = sc.nextInt()
+
+        if (result == 0) {
+            println("Succès pour l'objet b courant")
+        } else if (result == 1) {
+            println("l'ajout à echoué, car la période est plus grande que 2")
+        } else {
+            println("l'ajout à echoué, error de stream")
+        }
+
+        while(true) {
+            var updates = ""
+            while (sc.hasNext()) {
+
+                var str = sc.nextLine() //We wait for the object
+                updates += str
+                str = str.trim()
+                if (str == "}")
+                    break
+            }
+            println(updates)
+            var gameDetail: DetailGame = gson.fromJson(updates, DetailGame::class.java)
+            println("Teams : \t\t" + gameDetail.team1Name as String + " " + gameDetail.team2Name as String)
+            println("Goals : \t\t" + gameDetail.team1Goals + "-" + gameDetail.team2Goals)
+            println("Penalties : \t\t" + (gameDetail.team1Penalties) + "-" + (gameDetail.team2Penalties))
+
+            println("ENDED = " + gameDetail.isEnded)
+            if(gameDetail.isEnded == 1){
+                var betRes = ""
+                while (sc.hasNext()) {
+
+                    var str = sc.nextLine() //We wait for the object
+                    betRes += str
+                    str = str.trim()
+                    if (str == "}")
+                        break
+                    println(betRes)
+                }
+                val gson =  GsonBuilder().setPrettyPrinting().create()
+                var res: Result =  gson.fromJson(betRes, Result::class.java)
+                var gain : Double = 0.0
+                if(res.res == bet.choice) {
+                    gain = bet.bet / res.winningSum
+                    gain = gain * res.sum
+                }
+                else
+                    gain = 0.0
+                println("wa = " + gain)
+            }
+        }
+        sClient.close()
+    }
+
 }

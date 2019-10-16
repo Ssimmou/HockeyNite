@@ -1,18 +1,9 @@
-package Models
-import org.jetbrains.exposed.sql.Table
+package com.example.Data
 
-/**Teams data Class
- * @author Soufiane SIMMOU
- * @version V0.0.0
- */
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
 
-/**
- * Setting up the table skeleton for the dataBase
- */
-object Team : Table("team") {
-    val id = Team.integer("id").primaryKey().autoIncrement();
-    val name = Team.varchar("name", length = 50)
+
+data class Teams(val id: Int, val name: String){
 }
-
-data class Teams(val id: Int, val name: String)
 
