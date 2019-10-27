@@ -1,5 +1,6 @@
 package com.hatem.hockeynite.dummy
 
+import java.io.InputStream
 import java.util.ArrayList
 import java.util.HashMap
 
@@ -11,6 +12,14 @@ import java.util.HashMap
  */
 object DummyContent {
 
+    fun ReadJson(){
+        var json: String? =null
+
+        //val inputStream: InputStream =
+
+
+
+    }
     /**
      * An array of sample (dummy) items.
      */

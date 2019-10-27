@@ -2,10 +2,10 @@ package com.hatem.hockeynite
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NavUtils
 import android.view.MenuItem
+import android.widget.Button
 import kotlinx.android.synthetic.main.activity_game_detail.*
 
 /**
@@ -26,6 +26,20 @@ class GameDetailActivity : AppCompatActivity() {
                 .setAction("Action", null).show()
         }
 */
+        // get reference to button
+        val parier: Button = findViewById(R.id.parier)
+        // set on-click listener
+        parier.setOnClickListener {
+            val intent = Intent(this, PariActivity::class.java).apply {
+                putExtra("GameID", "ssss")
+            }
+            startActivity(intent)
+        }
+        //btn_click_me.setOnClickListener {
+            // your code to perform when the user clicks on the button
+           // Toast.makeText(this, "You clicked me.", Toast.LENGTH_SHORT).show()
+
+
         // Show the Up button in the action bar.
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -54,6 +68,7 @@ class GameDetailActivity : AppCompatActivity() {
                 .add(R.id.item_detail_container, fragment)
                 .commit()
         }
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem) =

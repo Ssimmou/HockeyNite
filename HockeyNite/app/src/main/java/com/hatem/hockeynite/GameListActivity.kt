@@ -1,19 +1,17 @@
 package com.hatem.hockeynite
 
+import android.content.BroadcastReceiver
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
 
 import com.hatem.hockeynite.dummy.DummyContent
-import kotlinx.android.synthetic.main.activity_game_list.*
 import kotlinx.android.synthetic.main.game_list_content.view.*
 import kotlinx.android.synthetic.main.game_list.*
 
@@ -31,15 +29,23 @@ class GameListActivity : AppCompatActivity() {
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
+    private val adresseIP= null
+    private val progressbarr: ProgressBar?= null
+    private val comService: Intent?= null
+    private val broadcastReceiver: BroadcastReceiver? =null
     private var twoPane: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_list)
+/*
+        broadcastReceiver.onReceive(this,intent){
+            var GameList: ListGames= intent.getSerializableExtra(C)
+        }*/
 
         //setSupportActionBar(AppBarLayout)
         //toolbar.title = title
-        val tabs: TabLayout = findViewById(R.id.tabs)
+        //val tabs: TabLayout = findViewById(R.id.tabs)
 /*
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -112,9 +118,12 @@ class GameListActivity : AppCompatActivity() {
         override fun getItemCount() = values.size
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val score: TextView = view.score
+            val score: TextView = view.score1
             val teams: TextView = view.teams
 
         }
     }
+
+
+
 }

@@ -1,12 +1,17 @@
 package com.hatem.hockeynite
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.Toast
+import androidx.core.view.get
 import com.hatem.hockeynite.dummy.DummyContent
 import kotlinx.android.synthetic.main.activity_game_detail.*
+import kotlinx.android.synthetic.main.game_detail.*
 import kotlinx.android.synthetic.main.game_detail.view.*
 
 /**
@@ -24,7 +29,15 @@ class GameDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        // get reference to button
+        /*val btn_click_me: Button = findViewById(R.id.parier)
+        // set on-click listener
+        btn_click_me.setOnClickListener {
+            val intent = Intent(this, PariActivity::class.java).apply {
+                putExtra("GameID", "ssss")
+            }
+            startActivity(intent)
+        }*/
         arguments?.let {
             if (it.containsKey(ARG_ITEM_ID)) {
                 // Load the dummy content specified by the fragment
@@ -34,7 +47,10 @@ class GameDetailFragment : Fragment() {
                 activity?.toolbar_layout?.title =item?.content
             }
         }
+
+
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +60,14 @@ class GameDetailFragment : Fragment() {
 
         // Show the dummy content as text in a TextView.
         item?.let {
-            rootView.item_detail.text = it.details
+            rootView.NomEquipe2.text= "sss"
+            rootView.NomEquipe1.text= "aaaa"
+            rootView.score1.text= "dddd"
+            rootView.score2.text= "ffff"
+            rootView.time.text= "15511515"
+
+
+
         }
 
         return rootView
