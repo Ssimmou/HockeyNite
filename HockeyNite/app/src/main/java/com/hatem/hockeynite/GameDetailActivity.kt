@@ -1,11 +1,15 @@
 package com.hatem.hockeynite
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.view.GestureDetector
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NavUtils
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.widget.Button
+import androidx.core.view.GestureDetectorCompat
 import kotlinx.android.synthetic.main.activity_game_detail.*
 
 /**
@@ -14,18 +18,23 @@ import kotlinx.android.synthetic.main.activity_game_detail.*
  * item details are presented side-by-side with a list of items
  * in a [GameListActivity].
  */
-class GameDetailActivity : AppCompatActivity() {
+class GameDetailActivity : AppCompatActivity(),
+                            GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener{
+
+
+    var gDetector: GestureDetectorCompat?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_detail)
         setSupportActionBar(detail_toolbar)
-/*
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        this.gDetector= GestureDetectorCompat(this,this)
+        this.gDetector?.setOnDoubleTapListener(this)
+        swipelist.setOnRefreshListener{
+            refreshAction() // refresh your list contents somehow
+            swipelist.isRefreshing = false
         }
-*/
+
         // get reference to button
         val parier: Button = findViewById(R.id.parier)
         // set on-click listener
@@ -36,8 +45,8 @@ class GameDetailActivity : AppCompatActivity() {
             startActivity(intent)
         }
         //btn_click_me.setOnClickListener {
-            // your code to perform when the user clicks on the button
-           // Toast.makeText(this, "You clicked me.", Toast.LENGTH_SHORT).show()
+        // your code to perform when the user clicks on the button
+        // Toast.makeText(this, "You clicked me.", Toast.LENGTH_SHORT).show()
 
 
         // Show the Up button in the action bar.
@@ -71,6 +80,16 @@ class GameDetailActivity : AppCompatActivity() {
 
     }
 
+    private fun refreshAction() {
+        ConstraintLayout.setBackgroundColor(Color.RED)
+
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        this.gDetector?.onTouchEvent(event)
+        return super.onTouchEvent(event)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem) =
         when (item.itemId) {
             android.R.id.home -> {
@@ -86,4 +105,63 @@ class GameDetailActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+
+
+    override fun onDown(e: MotionEvent?): Boolean {
+        ConstraintLayout.setBackgroundColor(Color.RED)
+        return true
+
+    }
+
+    override fun onFling(
+        e1: MotionEvent?,
+        e2: MotionEvent?,
+        velocityX: Float,
+        velocityY: Float
+    ): Boolean {
+        ConstraintLayout.setBackgroundColor(Color.GRAY)
+        return true
+    }
+
+    override fun onScroll(
+        e1: MotionEvent?,
+        e2: MotionEvent?,
+        distanceX: Float,
+        distanceY: Float
+    ): Boolean {
+        item_detail_container.setBackgroundColor(Color.BLUE)
+        return true
+    }
+
+
+
+    fun UpdateData(){
+        item_detail_container.setBackgroundColor(Color.YELLOW)
+    }
+
+
+
+    override fun onLongPress(e: MotionEvent?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onSingleTapUp(e: MotionEvent?): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onDoubleTapEvent(e: MotionEvent?): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onDoubleTap(e: MotionEvent?): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onShowPress(e: MotionEvent?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

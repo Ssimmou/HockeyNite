@@ -2,6 +2,7 @@ package com.hatem.hockeynite
 
 import android.content.BroadcastReceiver
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -12,8 +13,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 
 import com.hatem.hockeynite.dummy.DummyContent
+import kotlinx.android.synthetic.main.activity_game_detail.*
 import kotlinx.android.synthetic.main.game_list_content.view.*
 import kotlinx.android.synthetic.main.game_list.*
+import kotlinx.android.synthetic.main.game_list.item_detail_container
+import kotlinx.android.synthetic.main.game_list.swipelist
 
 /**
  * An activity representing a list of Pings. This activity
@@ -38,20 +42,15 @@ class GameListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_list)
-/*
-        broadcastReceiver.onReceive(this,intent){
-            var GameList: ListGames= intent.getSerializableExtra(C)
-        }*/
 
+        swipelist?.setOnRefreshListener{
+            refreshAction()
+            swipelist?.isRefreshing = false
+        }
         //setSupportActionBar(AppBarLayout)
         //toolbar.title = title
         //val tabs: TabLayout = findViewById(R.id.tabs)
-/*
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
-*/
+
         if (item_detail_container != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
@@ -61,6 +60,10 @@ class GameListActivity : AppCompatActivity() {
         }
 
         setupRecyclerView(item_list)
+    }
+
+    private fun refreshAction() {
+        swipelist.setBackgroundColor(Color.GRAY)
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {

@@ -29,15 +29,7 @@ class GameDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // get reference to button
-        /*val btn_click_me: Button = findViewById(R.id.parier)
-        // set on-click listener
-        btn_click_me.setOnClickListener {
-            val intent = Intent(this, PariActivity::class.java).apply {
-                putExtra("GameID", "ssss")
-            }
-            startActivity(intent)
-        }*/
+
         arguments?.let {
             if (it.containsKey(ARG_ITEM_ID)) {
                 // Load the dummy content specified by the fragment
@@ -62,8 +54,8 @@ class GameDetailFragment : Fragment() {
         item?.let {
             rootView.NomEquipe2.text= "sss"
             rootView.NomEquipe1.text= "aaaa"
-            rootView.score1.text= "dddd"
-            rootView.score2.text= "ffff"
+            rootView.Score_equipe1_total.text= "dddd"
+            rootView.Score_equipe2_total.text= "ffff"
             rootView.time.text= "15511515"
 
 

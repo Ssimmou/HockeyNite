@@ -11,52 +11,6 @@
     tools:context=".GameDetailFragment" >
 
     <TextView
-        android:id="@+id/NomEquipe1"
-        android:layout_width="106dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/score1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/Periode"
-        app:layout_constraintEnd_toStartOf="@+id/score2"
-        app:layout_constraintHorizontal_bias="0.157"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NomEquipe1" />
-
-    <TextView
-        android:id="@+id/NomEquipe2"
-        android:layout_width="108dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.818"
-        app:layout_constraintStart_toEndOf="@+id/NomEquipe1"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/score2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="52dp"
-        android:layout_marginRight="52dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/Periode"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NomEquipe2" />
-
-    <TextView
         android:id="@+id/Periode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -79,39 +33,31 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="393dp"
+        android:layout_height="216dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time">
+        app:layout_constraintStart_toStartOf="parent">
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
 
             <TableLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <TableRow
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/space_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/text_margin"
-                        android:textAppearance="?attr/textAppearanceListItem" />
-
-                    <TextView
-                        android:id="@+id/space_2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="137dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
                         android:textAppearance="?attr/textAppearanceListItem" />
@@ -150,30 +96,22 @@
                 </TableRow>
 
                 <TableRow
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
 
-                    <ImageView
-                        android:id="@+id/Logo_equipe11"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="1dp"
-                        android:contentDescription="logo_equipe1"
-                        android:src="@mipmap/ic_launcher" />
-
                     <TextView
-                        android:id="@+id/acronyme_equipe11"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/NomEquipe1"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/text_margin"
-                        android:textAppearance="?attr/textAppearanceListItem" />
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:text="TextView" />
 
                     <TextView
                         android:id="@+id/Score_equipe1_periode1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
                         android:text="00"
@@ -181,7 +119,7 @@
 
                     <TextView
                         android:id="@+id/Score_equipe1_periode2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
                         android:text="00"
@@ -205,29 +143,19 @@
                 </TableRow>
 
                 <TableRow
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:id="@+id/Logo_equipe22"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="1dp"
-                        android:layout_marginEnd="8dp"
-                        android:contentDescription="logo_equipe2"
-                        android:src="@mipmap/ic_launcher" />
-
                     <TextView
-                        android:id="@+id/acronyme_equipe22"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/NomEquipe2"
+                        android:layout_width="141dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/text_margin"
-                        android:textAppearance="?attr/textAppearanceListItem" />
+                        android:layout_marginTop="16dp"
+                        android:text="TextView" />
 
                     <TextView
                         android:id="@+id/Score_equipe2_periode1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
                         android:text="00"
@@ -235,7 +163,7 @@
 
                     <TextView
                         android:id="@+id/Score_equipe2_periode2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
                         android:text="00"
@@ -243,7 +171,7 @@
 
                     <TextView
                         android:id="@+id/Score_equipe2_periode3"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
                         android:text="00"
@@ -251,7 +179,7 @@
 
                     <TextView
                         android:id="@+id/Score_equipe2_total"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
                         android:text="00"
