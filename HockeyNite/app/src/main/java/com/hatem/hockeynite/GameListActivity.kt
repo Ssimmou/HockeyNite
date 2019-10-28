@@ -106,9 +106,12 @@ class GameListActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = values[position]
-            holder.teams.text = "Montreal VS Toronto"
-            holder.score.text = item.id + "  -  " + item.id
 
+            holder.score1.text = item.id
+            holder.score2.text = item.id
+            holder.NomEquipe1.text = item.content
+            holder.NomEquipe2.text = item.content
+            holder.periode.text = item.id
             with(holder.itemView) {
                 tag = item
                 setOnClickListener(onClickListener)
@@ -118,11 +121,15 @@ class GameListActivity : AppCompatActivity() {
         override fun getItemCount() = values.size
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val score: TextView = view.score1
-            val teams: TextView = view.teams
+            val score1: TextView = view.Score_equipe1
+            val score2: TextView = view.Score_equipe2
+            val NomEquipe1: TextView = view.Nom_equipe1
+            val NomEquipe2: TextView = view.Nom_equipe2
+            val periode: TextView = view.periode
 
         }
     }
+
 
 
 
