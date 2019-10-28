@@ -7,7 +7,7 @@ import com.hatem.hockeynite.Models.DetailGame
 import com.hatem.hockeynite.Models.Games
 import com.hatem.hockeynite.Models.Result
 
-//import org.joda.time.DateTime
+import org.joda.time.DateTime
 import java.io.BufferedReader
 
 
@@ -76,8 +76,8 @@ class Communication {
         for (i in 0..gameList.size - 1) {
             var team1Id = gameList.get(i).get("team1Id") as Double
             var team2Id = gameList.get(i).get("team2Id") as Double
-  //          var date = DateTime.parse(gameList.get(i).get("date") as String)
-  //          println(Integer.toString(i + 1) + " - " + team1Id.toInt() + " vs " + team2Id.toInt() + " at " + date.toDate().hours + ":" + date.toDate().minutes + " = = " + date.toDate().timezoneOffset )
+            var date = DateTime.parse(gameList.get(i).get("date") as String)
+            println(Integer.toString(i + 1) + " - " + team1Id.toInt() + " vs " + team2Id.toInt() + " at " + date.toDate().hours + ":" + date.toDate().minutes + " = = " + date.toDate().timezoneOffset )
         }
 
         aSocket!!.close()
