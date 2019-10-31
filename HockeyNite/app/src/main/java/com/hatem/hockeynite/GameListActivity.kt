@@ -33,6 +33,7 @@ class GameListActivity : AppCompatActivity() {
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
+
     private val adresseIP= null
     private val progressbarr: ProgressBar?= null
     private val comService: Intent?= null
@@ -63,7 +64,7 @@ class GameListActivity : AppCompatActivity() {
     }
 
     private fun refreshAction() {
-        swipelist.setBackgroundColor(Color.GRAY)
+        swipelist?.setBackgroundColor(Color.GRAY)
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {

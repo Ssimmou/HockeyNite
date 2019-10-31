@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hatem.hockeynite">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logo"
@@ -37,6 +38,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.hatem.hockeynite.GameDetailActivity" />
         </activity>
+        <service android:name="Communication" />
     </application>
 
 </manifest>

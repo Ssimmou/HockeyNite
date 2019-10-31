@@ -36,7 +36,7 @@ class GameDetailFragment : Fragment() {
                 // arguments. In a real-world scenario, use a Loader
                 // to load content from a content provider.
                 item = DummyContent.ITEM_MAP[it.getString(ARG_ITEM_ID)]
-                activity?.toolbar_layout?.title =item?.content
+                activity?.toolbar_layout?.title = item?.id
             }
         }
 
@@ -52,11 +52,11 @@ class GameDetailFragment : Fragment() {
 
         // Show the dummy content as text in a TextView.
         item?.let {
-            rootView.NomEquipe2.text= "sss"
-            rootView.NomEquipe1.text= "aaaa"
-            rootView.Score_equipe1_total.text= "dddd"
-            rootView.Score_equipe2_total.text= "ffff"
-            rootView.time.text= "15511515"
+            rootView.NomEquipe2.text= item?.id
+            rootView.NomEquipe1.text= item?.id
+            rootView.Score_equipe1_total.text= item?.id
+            rootView.Score_equipe2_total.text= item?.id
+            rootView.time.text= item?.id
 
 
 

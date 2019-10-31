@@ -9,6 +9,26 @@
     tools:context=".GameDetailActivity"
     tools:ignore="MergeRootFrame" >
 
+    <Button
+        android:id="@+id/precedent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="precedent"
+        app:layout_constraintEnd_toStartOf="@+id/suivant"
+        app:layout_constraintHorizontal_bias="0.068"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar" />
+
+    <Button
+        android:id="@+id/suivant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="avant"
+        app:layout_constraintBottom_toTopOf="@+id/swipelist"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar"
+        app:layout_constraintVertical_bias="0.0" />
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="0dp"
@@ -45,7 +65,7 @@
         android:id="@+id/parier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Parier"
+        android:text="@string/parier"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -56,7 +76,7 @@
         app:layout_constraintBottom_toTopOf="@+id/parier"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar"
+        app:layout_constraintTop_toBottomOf="@id/precedent"
         app:layout_constraintVertical_bias="0.0">
 
         <androidx.core.widget.NestedScrollView

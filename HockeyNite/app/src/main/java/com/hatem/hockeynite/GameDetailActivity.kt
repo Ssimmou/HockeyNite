@@ -30,6 +30,9 @@ class GameDetailActivity : AppCompatActivity(),
         setSupportActionBar(detail_toolbar)
         this.gDetector= GestureDetectorCompat(this,this)
         this.gDetector?.setOnDoubleTapListener(this)
+
+
+        //Refresh
         swipelist.setOnRefreshListener{
             refreshAction() // refresh your list contents somehow
             swipelist.isRefreshing = false
@@ -44,23 +47,11 @@ class GameDetailActivity : AppCompatActivity(),
             }
             startActivity(intent)
         }
-        //btn_click_me.setOnClickListener {
-        // your code to perform when the user clicks on the button
-        // Toast.makeText(this, "You clicked me.", Toast.LENGTH_SHORT).show()
-
 
         // Show the Up button in the action bar.
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // savedInstanceState is non-null when there is fragment state
-        // saved from previous configurations of this activity
-        // (e.g. when rotating the screen from portrait to landscape).
-        // In this case, the fragment will automatically be re-added
-        // to its container so we don't need to manually add it.
-        // For more information, see the Fragments API guide at:
-        //
-        // http://developer.android.com/guide/components/fragments.html
-        //
+
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
@@ -142,7 +133,7 @@ class GameDetailActivity : AppCompatActivity(),
 
 
     override fun onLongPress(e: MotionEvent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw UnsupportedOperationException("Not yet implemented")
     }
 
     override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
