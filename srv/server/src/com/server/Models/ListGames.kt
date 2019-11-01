@@ -18,8 +18,8 @@ class ListGames{
             transaction {
                 var res = Game.selectAll().limit(5)
                 for (f in res) {
-                    if(f[Game.date]?.toDate()!!.day == Date.from(Instant.now()).day)
-                        c.add(Games(id = f[Game.id], team1Id = f[Game.team1Id], team2Id = f[Game.team2Id], date = f[Game.date].toString(), ended = f[Game.ended]))
+                    //if(f[Game.date]?.toDate()!!.day == Date.from(Instant.now()).day)
+                    c.add(Games(id = f[Game.id], team1Id = f[Game.team1Id], team2Id = f[Game.team2Id], date = f[Game.date].toString(), ended = f[Game.ended]))
                 }
             }
             return c

@@ -28,7 +28,8 @@ class UDPServer(port: Int, threadPoolSize: Int, app : Scope) {
         var threadPool = Executors.newFixedThreadPool(poolSize)
         serverSocket = DatagramSocket(serverPort)
         val buffer = ByteArray(4000)
-        for (i in 0..9) {
+        // srv sends the request to a remote thread to handle the connecton (max connections is 200000)
+        for (i in 0..200000) {
             val datagram = DatagramPacket(buffer, buffer.size)
             serverSocket!!.receive(datagram)
             threadPool.execute(UDPHandler(datagram, serverSocket!!))
