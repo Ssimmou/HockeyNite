@@ -43,26 +43,7 @@ class GameDetailFragment : Fragment() {
             }
         }
 
-        var choix = -1
-        //var matchList: ListMatchName? = null
-        var aHost: InetAddress? = null
-        val serveurPort = 6780
-        val clientPort = 6779
-        val commObject = Client()
 
-        try {
-            aHost = InetAddress.getByName("localhost")
-        } catch (e: UnknownHostException) {
-            e.printStackTrace()
-        }
-
-        //Set server port and host
-        if (aHost != null) {
-            commObject.setServeur(aHost, serveurPort, clientPort)
-        }
-
-        println("Recuperation de la liste des matchs, veuillez patienter")
-        var matchList = commObject.getListGames()
 
 
     }
@@ -96,29 +77,5 @@ class GameDetailFragment : Fragment() {
          */
         const val ARG_ITEM_ID = "item_id"
     }
-    private fun displayMatchsList() {
-        var choix = -1
-        //var matchList: ListMatchName? = null
-        var aHost: InetAddress? = null
-        val serveurPort = 6780
-        val clientPort = 6779
-        val commObject = Client()
 
-        try {
-            aHost = InetAddress.getByName("localhost")
-        } catch (e: UnknownHostException) {
-            e.printStackTrace()
-        }
-
-        //Set server port and host
-        if (aHost != null) {
-            commObject.setServeur(aHost, serveurPort, clientPort)
-        }
-
-        println("Recuperation de la liste des matchs, veuillez patienter")
-        var matchList = commObject.getListGames()
-
-
-
-    }
 }

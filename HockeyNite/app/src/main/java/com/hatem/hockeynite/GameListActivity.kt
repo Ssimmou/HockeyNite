@@ -1,5 +1,6 @@
 package com.hatem.hockeynite
 
+import Client
 import android.content.BroadcastReceiver
 import android.content.Intent
 import android.graphics.Color
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.hatem.hockeynite.Models.Games
 
 import com.hatem.hockeynite.dummy.DummyContent
 import kotlinx.android.synthetic.main.activity_game_detail.*
@@ -18,6 +20,8 @@ import kotlinx.android.synthetic.main.game_list_content.view.*
 import kotlinx.android.synthetic.main.game_list.*
 import kotlinx.android.synthetic.main.game_list.item_detail_container
 import kotlinx.android.synthetic.main.game_list.swipelist
+import java.net.InetAddress
+import java.net.UnknownHostException
 
 /**
  * An activity representing a list of Pings. This activity
@@ -39,6 +43,7 @@ class GameListActivity : AppCompatActivity() {
     private val comService: Intent?= null
     private val broadcastReceiver: BroadcastReceiver? =null
     private var twoPane: Boolean = false
+    var matchList: ArrayList<Games>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +65,36 @@ class GameListActivity : AppCompatActivity() {
             twoPane = true
         }
 
+
+
+        var choix = -1
+        //var matchList: ListMatchName? = null
+        var aHost: InetAddress? = null
+        val serveurPort = 6780
+        val clientPort = 6779
+        val commObject = Client()
+
+        try {
+            aHost = InetAddress.getByName("localhost")
+        } catch (e: UnknownHostException) {
+            e.printStackTrace()
+        }
+
+        //Set server port and host
+        if (aHost != null) {
+            commObject.setServeur(aHost, serveurPort, clientPort)
+        }
+
+        println("Recuperation de la liste des matchs, veuillez patienter")
+         matchList = commObject.getListGames()
+
+
         setupRecyclerView(item_list)
+
+
+
+
+
     }
 
     private fun refreshAction() {
@@ -68,12 +102,39 @@ class GameListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, twoPane)
+        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, matchList, twoPane)
+    }
+
+
+    private fun displayMatchsList() {
+        var choix = -1
+        //var matchList: ListMatchName? = null
+        var aHost: InetAddress? = null
+        val serveurPort = 6780
+        val clientPort = 6779
+        val commObject = Client()
+
+        try {
+            aHost = InetAddress.getByName("localhost")
+        } catch (e: UnknownHostException) {
+            e.printStackTrace()
+        }
+
+        //Set server port and host
+        if (aHost != null) {
+            commObject.setServeur(aHost, serveurPort, clientPort)
+        }
+
+        println("Recuperation de la liste des matchs, veuillez patienter")
+        var matchList = commObject.getListGames()
+
+
+
     }
 
     class SimpleItemRecyclerViewAdapter(
         private val parentActivity: GameListActivity,
-        private val values: List<DummyContent.DummyItem>,
+        private val values: ArrayList<Games>?,
         private val twoPane: Boolean
     ) :
         RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
@@ -109,12 +170,12 @@ class GameListActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val item = values[position]
+            val item = values?.get(position)
 
-            holder.score1.text = item.id
-            holder.score2.text = item.id
-            holder.NomEquipe1.text = item.content
-            holder.NomEquipe2.text = item.content
+            holder.score1.text = item!!.team1Id.toString()
+            holder.score2.text = item!!.team2Id.toString()
+           // holder.NomEquipe1.text = item.content
+            //holder.NomEquipe2.text = item.content
             holder.periode.text = "FIN"
             with(holder.itemView) {
                 tag = item
@@ -122,7 +183,7 @@ class GameListActivity : AppCompatActivity() {
             }
         }
 
-        override fun getItemCount() = values.size
+        override fun getItemCount() = values!!.size
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val score1: TextView = view.Score_equipe1
