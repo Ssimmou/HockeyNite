@@ -12,14 +12,7 @@ import java.util.HashMap
  */
 object DummyContent {
 
-    fun ReadJson(){
-        var json: String? =null
 
-        //val inputStream: InputStream =
-
-
-
-    }
     /**
      * An array of sample (dummy) items.
      */
@@ -45,7 +38,7 @@ object DummyContent {
     }
 
     private fun createDummyItem(position: Int): DummyItem {
-        return DummyItem(position.toString(),"Equipe " + position + " vs Equipe " + position , makeDetails(position))
+        return DummyItem(position.toString(),"Equipe " + position  , makeDetails(position))
     }
 
     private fun makeDetails(position: Int): String {

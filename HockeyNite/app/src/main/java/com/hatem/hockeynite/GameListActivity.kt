@@ -115,7 +115,7 @@ class GameListActivity : AppCompatActivity() {
             holder.score2.text = item.id
             holder.NomEquipe1.text = item.content
             holder.NomEquipe2.text = item.content
-            holder.periode.text = item.id
+            holder.periode.text = "FIN"
             with(holder.itemView) {
                 tag = item
                 setOnClickListener(onClickListener)

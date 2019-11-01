@@ -202,13 +202,6 @@ class Client {
         var sc = Scanner(`is`)
         val result = sc.nextInt()
 
-        if (result == 0) {
-            println("Succès pour l'objet b courant")
-        } else if (result == 1) {
-            println("l'ajout à echoué, car la période est plus grande que 2")
-        } else {
-            println("l'ajout à echoué, error de stream")
-        }
 
         while(true) {
             var updates = ""

@@ -10,6 +10,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hatem.hockeynite.Models.Games
 import com.hatem.hockeynite.R
 import java.net.InetAddress
+import java.net.UnknownHostException
 
 class Communication: Service() {
     // est-ce que le service
@@ -103,5 +104,7 @@ class Communication: Service() {
         val COM_RESULT = "REQUEST_PROCESSED"
         val COM_MESSAGE = "COM_MSG"
     }
+
+
 
 }
