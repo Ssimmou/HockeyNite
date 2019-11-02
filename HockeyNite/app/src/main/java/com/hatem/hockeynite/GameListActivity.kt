@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.game_list.item_detail_container
 import kotlinx.android.synthetic.main.game_list.swipelist
 import java.net.InetAddress
 import java.net.UnknownHostException
+import kotlin.math.log
 
 /**
  * An activity representing a list of Pings. This activity
@@ -32,6 +33,8 @@ import java.net.UnknownHostException
  * item details side-by-side using two vertical panes.
  */
 class GameListActivity : AppCompatActivity() {
+    val commObject = Client()
+    var matchList : ArrayList<Games>? = null
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -43,9 +46,9 @@ class GameListActivity : AppCompatActivity() {
     private val comService: Intent?= null
     private val broadcastReceiver: BroadcastReceiver? =null
     private var twoPane: Boolean = false
-    var matchList: ArrayList<Games>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_list)
 
@@ -65,76 +68,44 @@ class GameListActivity : AppCompatActivity() {
             twoPane = true
         }
 
-
-
-        var choix = -1
-        //var matchList: ListMatchName? = null
-        var aHost: InetAddress? = null
-        val serveurPort = 6780
-        val clientPort = 6779
-        val commObject = Client()
-
-        try {
-            aHost = InetAddress.getByName("localhost")
-        } catch (e: UnknownHostException) {
-            e.printStackTrace()
-        }
-
-        //Set server port and host
-        if (aHost != null) {
-            commObject.setServeur(aHost, serveurPort, clientPort)
-        }
-
-        println("Recuperation de la liste des matchs, veuillez patienter")
-         matchList = commObject.getListGames()
-
-
         setupRecyclerView(item_list)
+        Thread(Runnable {
+            // a potentially time consuming task
+            var aHost: InetAddress? = null
+            val serveurPort = 6780
+            val clientPort = 6779
 
 
+            try {
+                aHost = InetAddress.getByName("10.0.2.2")
+            } catch (e: UnknownHostException) {
+                e.printStackTrace()
+            }
 
+            //Set server port and host
+            if (aHost != null) {
+                commObject.setServeur(aHost, serveurPort, clientPort)
+            }
+            matchList = commObject.getListGames()
 
+        }).start()
 
     }
+
+
 
     private fun refreshAction() {
         swipelist?.setBackgroundColor(Color.GRAY)
+
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, matchList, twoPane)
-    }
-
-
-    private fun displayMatchsList() {
-        var choix = -1
-        //var matchList: ListMatchName? = null
-        var aHost: InetAddress? = null
-        val serveurPort = 6780
-        val clientPort = 6779
-        val commObject = Client()
-
-        try {
-            aHost = InetAddress.getByName("localhost")
-        } catch (e: UnknownHostException) {
-            e.printStackTrace()
-        }
-
-        //Set server port and host
-        if (aHost != null) {
-            commObject.setServeur(aHost, serveurPort, clientPort)
-        }
-
-        println("Recuperation de la liste des matchs, veuillez patienter")
-        var matchList = commObject.getListGames()
-
-
-
+        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, twoPane)
     }
 
     class SimpleItemRecyclerViewAdapter(
         private val parentActivity: GameListActivity,
-        private val values: ArrayList<Games>?,
+        private val values: List<DummyContent.DummyItem>,
         private val twoPane: Boolean
     ) :
         RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
@@ -170,20 +141,20 @@ class GameListActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val item = values?.get(position)
+            val item = values[position]
 
-            holder.score1.text = item!!.team1Id.toString()
-            holder.score2.text = item!!.team2Id.toString()
-           // holder.NomEquipe1.text = item.content
-            //holder.NomEquipe2.text = item.content
-            holder.periode.text = "FIN"
+            holder.score1.text = item.id
+            holder.score2.text = item.id
+            holder.NomEquipe1.text = item.content
+            holder.NomEquipe2.text = item.content
+            holder.periode.text = item.id
             with(holder.itemView) {
                 tag = item
                 setOnClickListener(onClickListener)
             }
         }
 
-        override fun getItemCount() = values!!.size
+        override fun getItemCount() = values.size
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val score1: TextView = view.Score_equipe1
