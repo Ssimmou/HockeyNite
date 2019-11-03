@@ -1,0 +1,14 @@
+{
+  "destination": "127.0.0.1",
+  "destinationPort": 6779,
+  "value": {
+    "team1Name": "barca",
+    "team2Name": "Valadollid",
+    "date": "2019-10-15T20:00:00.000-04:00",
+    "team1Goals": 0,
+    "team2Goals": 0,
+    "team1Penalties": 0,
+    "team2Penalties": 0,
+    "isEnded": 0
+  }
+}

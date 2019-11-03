@@ -97,13 +97,23 @@ kotlin {
     }
 }
 
-
-
 jar {
+    baseName 'serverapp'
     manifest {
-        attributes("Implementation-Title": "Server",
-                "Implementation-Version": "1.0",
-                "Class-Path": "../lib/netty-all-4.1.16.Final.jar")
+        attributes 'Main-Class': 'main.kt'
     }
+
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'jar_srv',
+                'Implementation-Version': version,
+                'Main-Class': 'main.kt'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 

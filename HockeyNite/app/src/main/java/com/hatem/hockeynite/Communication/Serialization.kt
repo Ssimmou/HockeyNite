@@ -1,7 +1,11 @@
 
 import com.google.gson.GsonBuilder
-import java.io.*
+import java.io.ByteArrayOutputStream
+import java.io.ObjectOutputStream
 import java.net.DatagramPacket
+import java.io.DataOutputStream
+import java.io.DataInputStream
+
 
 
 fun unSerialize(packet: DatagramPacket) : Request {
@@ -17,8 +21,6 @@ fun unSerializeReply(packet: DatagramPacket) : Reply {
     var response = String(packet.getData(), 0, packet.getLength())
     response = response.subSequence(response.indexOf('{'), response.length) as String
     println(response)
-    File("data.json").writeText(response)
-
     var reply: Reply =  gson.fromJson(response, Reply::class.java)
     return reply;
 }

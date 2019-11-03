@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">HockeyNite</string>
+    <string name="title_item_detail">Item Detail</string>
+    <string name="parier">parier</string>
+    <string name="FileShared">FileShared</string>
+    <string name="Serveur_adresse">Serveur_adresse</string>
+</resources>
