@@ -17,7 +17,7 @@ class Communication: Service() {
     // est en train de s’exécuter ?
     private var runFlag = false
     // thread séparé qui effectue la MAJ
-    private var updater: Updater? = null
+    private lateinit var updater: Updater
     private lateinit var broadcaster: LocalBroadcastManager
     override fun onBind(intent:Intent): IBinder? {
         return null
@@ -42,9 +42,11 @@ class Communication: Service() {
         super.onStartCommand(intent, flags, startId)
         // démarrer le fil de MAJ
         // au démarrage du service
-       // if (this.updater.isAlive()) this.updater.stop() //TODO don't work
+        //if (runFlag == true)  //TODO don't work
         this.runFlag = true
-        this.updater?.start()
+        if(this.updater.isAlive== false)
+            this.updater.start()
+
         Log.d(TAG, "onStarted")
         return START_STICKY
     }

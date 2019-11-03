@@ -17,6 +17,7 @@ import android.widget.TextView
 import android.widget.ThemedSpinnerAdapter
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hatem.hockeynite.Communication.Communication
 import com.hatem.hockeynite.Models.DetailGame
 import com.hatem.hockeynite.Models.Games
@@ -50,7 +51,7 @@ class GameListActivity : AppCompatActivity() {
 
     private val adresseIP= null
     private val progressbarr: ProgressBar?= null
-    private val comService: Intent?= null
+    private var comService: Intent?= null
     private lateinit var broadcastReceiver: BroadcastReceiver
     private var twoPane: Boolean = false
 
@@ -84,10 +85,12 @@ class GameListActivity : AppCompatActivity() {
             }
         }
 
-        val intent=Intent(applicationContext, Communication::class.java)
-        startService(intent)
+        comService=Intent(applicationContext, Communication::class.java)
+        startService(comService)
+
 
         setupRecyclerView(item_list)
+
     }
 
 
@@ -104,13 +107,27 @@ class GameListActivity : AppCompatActivity() {
 
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        LocalBroadcastManager.getInstance(this).registerReceiver((broadcastReceiver),
+            IntentFilter(Communication.COM_RESULT))
+
+    }
+
     private fun refreshAction() {
         swipelist?.setBackgroundColor(Color.GRAY)
         setupRecyclerView(item_list)
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
+        //recyclerView.adapter = GameRecyclerViewAdapter(this,matchList, twoPane)
+
+        val recyclerView = item_list
+        val manager = LinearLayoutManager(this)
+        recyclerView.layoutManager = manager
+        recyclerView.setHasFixedSize(true)
         recyclerView.adapter = GameRecyclerViewAdapter(this,matchList, twoPane)
+        recyclerView.setAdapter( recyclerView.adapter)
     }
 
     fun updateData(listeParties:ArrayList<Games>) {
@@ -121,8 +138,10 @@ class GameListActivity : AppCompatActivity() {
             return
         }
         setupRecyclerView(item_list)
+
     }
 
+    
     class GameRecyclerViewAdapter(
         private val parentActivity: GameListActivity,
         private val values: ArrayList<Games>,
@@ -162,14 +181,24 @@ class GameListActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val gameID = values[position]
-            var game=parentActivity.commObject.getDetailsGame(gameID.id)
 
+            //var game=getDetailsGame(gameID.id)
 
-            holder.score1.text = game?.team1Goals.toString()
-            holder.score2.text = game?.team2Goals.toString()
-            holder.NomEquipe1.text = game?.team1Name
-            holder.NomEquipe2.text = game?.team2Name
-            holder.periode.text = game?.date.toString()
+/*
+            holder.score1.text = game.team1Goals.toString()
+            holder.score2.text = game.team2Goals.toString()
+            holder.NomEquipe1.text = game.team1Name
+            holder.NomEquipe2.text = game.team2Name
+            holder.periode.text = game.date.toString()
+
+ */
+
+            holder.score1.text = gameID.team1Id.toString()
+            holder.score2.text = gameID.team2Id.toString()
+            holder.NomEquipe1.text = gameID.team1Id.toString()
+            holder.NomEquipe2.text = gameID.team2Id.toString()
+            holder.periode.text = gameID.date.toString()
+
             with(holder.itemView) {
                 tag = gameID
                 setOnClickListener(onClickListener)
