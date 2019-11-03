@@ -18,7 +18,7 @@ class Communication: Service() {
     private var runFlag = false
     // thread séparé qui effectue la MAJ
     private var updater: Updater? = null
-    private val broadcaster = LocalBroadcastManager.getInstance(this)
+    private lateinit var broadcaster: LocalBroadcastManager
     override fun onBind(intent:Intent): IBinder? {
         return null
     }
@@ -26,6 +26,7 @@ class Communication: Service() {
         super.onCreate()
         // créer le fil de MAJ
         // à la création du service
+        broadcaster= LocalBroadcastManager.getInstance(this)
         this.updater = Updater()
         Log.d(TAG, "onCreated")
     }
@@ -62,7 +63,7 @@ class Communication: Service() {
      */
     // note : AsynchTask pour les threads UI
     private inner class Updater:Thread("UpdaterService-Updater") {
-        public override fun run() { // méthode invoquée pour démarrer le fil
+        override fun run() { // méthode invoquée pour démarrer le fil
             val comService = this@Communication // réf. Sur le service
             while (comService.runFlag)
             { // MAJ via les méthode onStartCOmmand et onDestroy
@@ -71,18 +72,22 @@ class Communication: Service() {
                 {
                     /* Get DATA */
                     val commClient = Client()
-                    val adr: InetAddress
+                    //val adr: InetAddress
+                    var aHost: InetAddress
+                    val serveurPort = 6780
+                    val clientPort = 6779
                     try
                     {
-                        adr = InetAddress.getByName(getApplication().getSharedPreferences(getResources().getString(
-                            R.string.FileShared), Context.MODE_PRIVATE).getString(getResources().getString(R.string.Serveur_adresse), "192.168.1.1"))
+                        aHost = InetAddress.getByName("10.0.2.2")
+                        //adr = InetAddress.getByName(getApplication().getSharedPreferences(getResources().getString(
+                          //  R.string.FileShared), Context.MODE_PRIVATE).getString(getResources().getString(R.string.Serveur_adresse), "192.168.1.1"))
                     }
                     catch (e:Exception) {
                         sendResult(null!!)
                         return
                     }
                     // Placer les paramètres de communications
-                    commClient.setServeur(adr, 6780, 6779)
+                    commClient.setServeur(aHost, serveurPort, clientPort)
                     // Lecture de la liste des parties
                     val listeParties: ArrayList<Games>? = commClient.getListGames()
                     sendResult(listeParties)

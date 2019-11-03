@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="4dp"
         android:layout_weight="1"
-        android:background="?android:attr/listDivider" />
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout4"
@@ -49,6 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/text_margin"
+                android:inputType="number"
                 android:text="00"
                 android:textAppearance="?attr/textAppearanceListItem" />
         </LinearLayout>
@@ -62,6 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/text_margin"
+                android:inputType="number"
                 android:text="00"
                 android:textAppearance="?attr/textAppearanceListItem" />
         </LinearLayout>

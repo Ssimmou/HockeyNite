@@ -2,7 +2,9 @@ package com.hatem.hockeynite
 
 import Client
 import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -12,17 +14,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.ThemedSpinnerAdapter
+import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.hatem.hockeynite.Communication.Communication
+import com.hatem.hockeynite.Models.DetailGame
 import com.hatem.hockeynite.Models.Games
+import kotlinx.android.synthetic.main.activity_game_list.*
 
-import com.hatem.hockeynite.dummy.DummyContent
-import kotlinx.android.synthetic.main.activity_game_detail.*
 import kotlinx.android.synthetic.main.game_list_content.view.*
 import kotlinx.android.synthetic.main.game_list.*
 import kotlinx.android.synthetic.main.game_list.item_detail_container
 import kotlinx.android.synthetic.main.game_list.swipelist
+import kotlinx.coroutines.*
+import java.lang.Runnable
 import java.net.InetAddress
 import java.net.UnknownHostException
-import kotlin.math.log
 
 /**
  * An activity representing a list of Pings. This activity
@@ -34,7 +41,7 @@ import kotlin.math.log
  */
 class GameListActivity : AppCompatActivity() {
     val commObject = Client()
-    var matchList : ArrayList<Games>? = null
+    var matchList= ArrayList<Games>()
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -44,10 +51,11 @@ class GameListActivity : AppCompatActivity() {
     private val adresseIP= null
     private val progressbarr: ProgressBar?= null
     private val comService: Intent?= null
-    private val broadcastReceiver: BroadcastReceiver? =null
+    private lateinit var broadcastReceiver: BroadcastReceiver
     private var twoPane: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_list)
@@ -68,57 +76,69 @@ class GameListActivity : AppCompatActivity() {
             twoPane = true
         }
 
+
+        broadcastReceiver = object:BroadcastReceiver() {
+            override fun onReceive(context: Context?,intent:Intent) {
+                matchList = intent.getSerializableExtra(Communication.COM_MESSAGE) as ArrayList<Games>
+                updateData(matchList)
+            }
+        }
+
+        val intent=Intent(applicationContext, Communication::class.java)
+        startService(intent)
+
         setupRecyclerView(item_list)
-        Thread(Runnable {
-            // a potentially time consuming task
-            var aHost: InetAddress? = null
-            val serveurPort = 6780
-            val clientPort = 6779
-
-
-            try {
-                aHost = InetAddress.getByName("10.0.2.2")
-            } catch (e: UnknownHostException) {
-                e.printStackTrace()
-            }
-
-            //Set server port and host
-            if (aHost != null) {
-                commObject.setServeur(aHost, serveurPort, clientPort)
-            }
-            matchList = commObject.getListGames()
-
-        }).start()
-
     }
 
 
+     override fun onStart() {
+        super.onStart()
+        LocalBroadcastManager.getInstance(this).registerReceiver((broadcastReceiver),
+            IntentFilter(Communication.COM_RESULT)
+        )
+    }
+
+    override fun onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+        super.onStop()
+
+    }
 
     private fun refreshAction() {
         swipelist?.setBackgroundColor(Color.GRAY)
-
+        setupRecyclerView(item_list)
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, twoPane)
+        recyclerView.adapter = GameRecyclerViewAdapter(this,matchList, twoPane)
     }
 
-    class SimpleItemRecyclerViewAdapter(
+    fun updateData(listeParties:ArrayList<Games>) {
+        //progressBar.setVisibility(View.INVISIBLE)
+        if (listeParties == null)
+        {
+            Toast.makeText(this, "Liste non-disponible", Toast.LENGTH_SHORT).show()
+            return
+        }
+        setupRecyclerView(item_list)
+    }
+
+    class GameRecyclerViewAdapter(
         private val parentActivity: GameListActivity,
-        private val values: List<DummyContent.DummyItem>,
+        private val values: ArrayList<Games>,
         private val twoPane: Boolean
     ) :
-        RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
+        RecyclerView.Adapter<GameRecyclerViewAdapter.ViewHolder>() {
 
         private val onClickListener: View.OnClickListener
 
         init {
             onClickListener = View.OnClickListener { v ->
-                val item = v.tag as DummyContent.DummyItem
+                val Game = v.tag as Games
                 if (twoPane) {
                     val fragment = GameDetailFragment().apply {
                         arguments = Bundle().apply {
-                            putString(GameDetailFragment.ARG_ITEM_ID, item.id)
+                            putInt(GameDetailFragment.ARG_ITEM_ID, Game.id)
                         }
                     }
                     parentActivity.supportFragmentManager
@@ -127,7 +147,7 @@ class GameListActivity : AppCompatActivity() {
                         .commit()
                 } else {
                     val intent = Intent(v.context, GameDetailActivity::class.java).apply {
-                        putExtra(GameDetailFragment.ARG_ITEM_ID, item.id)
+                        putExtra(GameDetailFragment.ARG_ITEM_ID, Game.id)
                     }
                     v.context.startActivity(intent)
                 }
@@ -141,15 +161,17 @@ class GameListActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val item = values[position]
+            val gameID = values[position]
+            var game=parentActivity.commObject.getDetailsGame(gameID.id)
 
-            holder.score1.text = item.id
-            holder.score2.text = item.id
-            holder.NomEquipe1.text = item.content
-            holder.NomEquipe2.text = item.content
-            holder.periode.text = item.id
+
+            holder.score1.text = game?.team1Goals.toString()
+            holder.score2.text = game?.team2Goals.toString()
+            holder.NomEquipe1.text = game?.team1Name
+            holder.NomEquipe2.text = game?.team2Name
+            holder.periode.text = game?.date.toString()
             with(holder.itemView) {
-                tag = item
+                tag = gameID
                 setOnClickListener(onClickListener)
             }
         }
