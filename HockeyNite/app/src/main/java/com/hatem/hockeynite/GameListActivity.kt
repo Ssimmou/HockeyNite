@@ -76,7 +76,7 @@ class GameListActivity : AppCompatActivity() {
             // activity should be in two-pane mode.
             twoPane = true
         }
-
+        setupRecyclerView(item_list)
 
         broadcastReceiver = object:BroadcastReceiver() {
             override fun onReceive(context: Context?,intent:Intent) {
@@ -89,7 +89,7 @@ class GameListActivity : AppCompatActivity() {
         startService(comService)
 
 
-        setupRecyclerView(item_list)
+
 
     }
 
@@ -112,8 +112,19 @@ class GameListActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this).registerReceiver((broadcastReceiver),
             IntentFilter(Communication.COM_RESULT))
 
+
     }
 
+    override fun onResume() {
+        super.onResume()
+        
+        setupRecyclerView(item_list)
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
     private fun refreshAction() {
         swipelist?.setBackgroundColor(Color.GRAY)
         setupRecyclerView(item_list)
@@ -141,7 +152,7 @@ class GameListActivity : AppCompatActivity() {
 
     }
 
-    
+
     class GameRecyclerViewAdapter(
         private val parentActivity: GameListActivity,
         private val values: ArrayList<Games>,
