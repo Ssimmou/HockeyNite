@@ -80,7 +80,7 @@ class Client {
             var date = DateTime.parse(gameList.get(i).get("date") as String)
             var ended= gameList.get(i).get("ended") as Double
 
-            val game: Games = Games(id.toInt(), team1Id.toInt(),team1Id.toInt(),date,ended.toInt())
+            val game: Games = Games(id.toInt(), team1Id.toInt(),team2Id.toInt(),date,ended.toInt())
 
             if (list != null) {
                 list.add(game)

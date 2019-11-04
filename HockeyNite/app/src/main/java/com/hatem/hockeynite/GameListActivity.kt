@@ -117,7 +117,7 @@ class GameListActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        
+
         setupRecyclerView(item_list)
 
     }
