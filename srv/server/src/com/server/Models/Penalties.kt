@@ -16,11 +16,24 @@ object Penalty : Table("penalty") {
 
 }
 
+/**
+ * Penalties.kt
+ *
+ * This class Creates the penalties object
+ * @property id The penalty ID
+ * @property teamId The team id
+ * @property playerId the Id of a given player
+ * @property periodId the id of the needed period
+ * @constructor Creates an empty penalty
+ */
 
 data class Penalties(val id: Int, val teamId: Int, val playerId : Int, val periodId: Int){
     companion object{
         @JvmStatic
         @Synchronized
+        /**
+         * addPenalty in a given game supplying all the needed informations
+         */
         fun addPenalty(gameId: Int, teamId: Int, playerId : Int) {
             transaction{
                 Penalty.insert {
@@ -32,6 +45,9 @@ data class Penalties(val id: Int, val teamId: Int, val playerId : Int, val perio
         }
         @Synchronized
         @JvmStatic
+        /**
+         * getPenalitiesInMatch, returns all the penalties in a game for a specified team
+         */
         fun getPenalitiesInMatch(idGame: Int, idTeam: Int?) : Int{
             var ret : Int = 0
             var res : Query? = null

@@ -14,9 +14,23 @@ object Game : Table("game") {
     val date = (date("date").nullable())
     val ended = (integer("ended"))
 }
+/**
+ * Bets.kt
+ *
+ * This class Creates the Game Object and handles all the operations related.
+ * @property id The game ID
+ * @property team1Id  The ID of the first team
+ * @property team2Id  The ID of the second team
+ * @property date the date of the game
+ * @property ended  the game has ended if set to 1
+ * @constructor Creates an empty game
+ */
+
 data class Games(val id:Int, val team1Id: Int?, val team2Id: Int?, val date: String, val ended : Int) {
     companion object {
-
+        /**
+         * gameEnded, sets a game to an end
+         */
         @JvmStatic
         @Synchronized
         fun gameEnded(id: Int) {
@@ -27,6 +41,10 @@ data class Games(val id:Int, val team1Id: Int?, val team2Id: Int?, val date: Str
             }
             Periods.periodEnded(id, true)
         }
+        /**
+         * getGame gets the game details with a given gameid
+         * @return game details
+         */
         @JvmStatic
         @Synchronized fun getGame(id : Int): DetailGame? {
             var team1Id : Int = 0
@@ -45,6 +63,10 @@ data class Games(val id:Int, val team1Id: Int?, val team2Id: Int?, val date: Str
             }
             return detail
         }
+        /**
+         * getResult gets the status of a game if team1 or team2 is wining
+         * @return 0 if the game is tied, 1 if team1 is winning, 2 otherwise
+         */
         @JvmStatic
         @Synchronized fun getResult(gameId: Int): Int {
             var team1Goals : Int = 0

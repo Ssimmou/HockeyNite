@@ -10,9 +10,21 @@ object Period : Table("period") {
     val ended = (integer("ended"))
 }
 
+/**
+ * Periods.kt
+ *
+ * This class Creates the period object
+ * @property id The period ID
+ * @property gameId the id of an already created game in the DataBase
+ * @property ended the value to set if a period is ended or not
+ * @constructor Creates an empty period
+ */
+
 data class Periods(val id: Int, val gameId: Int, val ended : Int) {
     companion object {
-
+        /**
+         * periodEnded, Ends a period
+        */
         @JvmStatic
         @Synchronized
         fun periodEnded(id: Int, matchEnded: Boolean) {
@@ -28,6 +40,9 @@ data class Periods(val id: Int, val gameId: Int, val ended : Int) {
         }
         @JvmStatic
         @Synchronized
+        /**
+         * addPeriod, adds a period in the DB
+         */
         fun addPeriod(id: Int) {
             transaction {
                 Period.insert {
@@ -38,6 +53,10 @@ data class Periods(val id: Int, val gameId: Int, val ended : Int) {
 
         @JvmStatic
         @Synchronized
+        /**
+         * lastPeriod,return the last period id in a game
+         * @return game ID
+         */
         fun lastPeriod(gameId: Int): Int {
             var ret = 0
             transaction {

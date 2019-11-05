@@ -9,9 +9,23 @@ object Bet : Table("bet") {
     val choice = integer("choice")
     val bet = float("bet")
 }
+/**
+ * Bets.kt
+ *
+ * This class Creates the Bet Object and handles all the operations related.
+ * @property id The bet ID
+ * @property idGame The game ID
+ * @property choice The team that you want to bet on 0 for home 1 for away team
+ * @property bet    The amount of the bet made
+ * @constructor Creates an empty bet
+ */
 
 data class Bets(val id: Int, val idGame : Int, val choice :Int, val bet : Float){
     companion object{
+        /**
+         * PlaceBet, Places a bet and stores it in the DataBase
+         * @return done if everything goes well, error otherwise
+         */
         @Synchronized fun placeBet(id: Int, choix: Int, amount: Float) : String{
             println(id)
             println(choix)
@@ -40,7 +54,11 @@ data class Bets(val id: Int, val idGame : Int, val choice :Int, val bet : Float)
             }
             return "done"
         }
-
+        /**
+         * getWinningSum
+         *
+         * @return the sum of wining bets only
+         */
         fun getWinningSum(gameId: Int, gameRes: Int): Double {
             var sum : Double = 0.0
             transaction {
@@ -54,7 +72,10 @@ data class Bets(val id: Int, val idGame : Int, val choice :Int, val bet : Float)
             println("winning sum = " + sum)
             return sum
         }
-
+        /**
+         * getSum
+         * @return the sum of all the placed bets.
+         */
         fun getSum(gameId: Int): Double {
             var sum : Double = 0.0
             transaction {

@@ -74,7 +74,7 @@ class Client {
         var list= ArrayList<Games>()
         var i: Int = 0
         for (i in 0..gameList.size - 1) {
-            var id = gameList.get(i).get("id") as Double
+            var id = gameList.get(i).get("id")!!.toDouble()
             var team1Id = gameList.get(i).get("team1Id") as Double
             var team2Id = gameList.get(i).get("team2Id") as Double
             var date = DateTime.parse(gameList.get(i).get("date") as String)
