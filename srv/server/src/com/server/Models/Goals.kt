@@ -11,12 +11,26 @@ object Goal : Table("goal") {
     val periodId = (integer("periodId")references  Period.id).nullable()
 }
 
+/**
+ * Goals.kt
+ *
+ * This class Creates the Goal Object and handles all the operations related.
+ * @property id The Goal ID
+ * @property teamId The team id
+ * @property playerId the Id of a given player
+ * @property periodId the id of the needed period
+ * @constructor Creates an empty bet
+ */
 
 
 data class Goals(val id: Int,  val teamId :Int, val playerId : Int, val periodId : Int){
     companion object{
         @JvmStatic
         @Synchronized
+        /**
+         * addGoal, adds a goal and stores it in the DataBase
+         *
+         */
         fun addGoal(gameId : Int, teamId : Int, playerId : Int){
             transaction{
                 Goal.insert {
@@ -28,6 +42,10 @@ data class Goals(val id: Int,  val teamId :Int, val playerId : Int, val periodId
         }
         @JvmStatic
         @Synchronized
+        /**
+         * getGoalsInMatch
+         * @return returns the results (goals) of the game
+         */
         fun getGoalsInMatch(idGame: Int, idTeam: Int?) : Int{
             var ret : Int = 0
             var res : Query? = null

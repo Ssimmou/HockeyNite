@@ -68,7 +68,6 @@ class Communication {
 
         val buffer = ByteArray(4000)
         datagram = DatagramPacket(buffer, buffer.size)
-        println("haha")
         aSocket!!.receive(datagram)
         var reply = unSerializeReply(datagram)
 
