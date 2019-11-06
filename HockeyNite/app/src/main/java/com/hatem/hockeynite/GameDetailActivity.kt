@@ -48,6 +48,7 @@ class GameDetailActivity : AppCompatActivity(),
         this.gDetector?.setOnDoubleTapListener(this)
 
         GameDetailFragment.ARG_GAME_ID
+
         //Refresh
         swipelist.setOnRefreshListener{
             refreshAction() // refresh your list contents somehow
