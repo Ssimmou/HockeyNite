@@ -51,7 +51,10 @@ class Communication: Service() {
         // au démarrage du service
         //if (runFlag == true)  //TODO don't work
         this.runFlag = true
-        if(this.updater.isAlive== false)
+        if(this.updater.isAlive) {
+            this.updater.interrupt()
+        }
+        else
             this.updater.start()
 
         Log.d(TAG, "onStarted")

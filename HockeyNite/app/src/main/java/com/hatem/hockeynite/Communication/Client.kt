@@ -174,11 +174,17 @@ class Client {
             return null;
         println("The amount ? ")
         var amount = sc.nextFloat()
-        aSocket!!.close()
+
 
         play(id, choix, amount)
 
  */
+         try {
+             aSocket!!.close()
+         }catch (e: SocketException){
+                println("sockeet erreur cleint 185")
+         }
+
         return DetailGame
     }
 

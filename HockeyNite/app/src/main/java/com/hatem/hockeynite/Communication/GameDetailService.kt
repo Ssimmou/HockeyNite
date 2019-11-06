@@ -80,7 +80,7 @@ class GameDetailService: Service() {
     private inner class UpdaterDetail:Thread("UpdaterDetailService-Updater") {
         override fun run() { // méthode invoquée pour démarrer le fil
             val desService = this@GameDetailService// réf. Sur le service
-            if (desService.runFlag)
+            while (desService.runFlag)
             { // MAJ via les méthode onStartCOmmand et onDestroy
             Log.d(GameDetailService.TAG, "Detail updater running")
             try
@@ -117,11 +117,12 @@ class GameDetailService: Service() {
 
                 sendResult(gamedetail)
                 Log.d(GameDetailService.TAG, "Detail Updater ran")
-                Thread.sleep(5000) // s’endormir entre chaque mise à jour
-                this.interrupt()
+                Thread.sleep(1000) // s’endormir entre chaque mise à jour
+
             }
             catch (e:InterruptedException) {
                 // exception est déclenchée lorsqu’on signale interrupt()
+                this.interrupt()
                 desService.runFlag = false
             }
         }

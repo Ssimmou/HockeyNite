@@ -168,7 +168,7 @@ class GameDetailActivity : AppCompatActivity(),
     }
     private fun refreshAction() {
         ConstraintLayout.setBackgroundColor(Color.RED)
-        //updateData()
+        updateData()
 
     }
 

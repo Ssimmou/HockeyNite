@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hatem.hockeynite.Communication.Communication
+import com.hatem.hockeynite.Models.DetailGame
 import com.hatem.hockeynite.Models.Games
 
 import kotlinx.android.synthetic.main.game_list_content.view.*
@@ -34,9 +35,8 @@ import kotlinx.android.synthetic.main.game_list.swipelist
  * item details side-by-side using two vertical panes.
  */
 class GameListActivity : AppCompatActivity() {
-    val commObject = Client()
     var matchList= ArrayList<Games>()
-
+    var listeDetailsParties= ArrayList<DetailGame>()
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -74,7 +74,9 @@ class GameListActivity : AppCompatActivity() {
         broadcastReceiver = object:BroadcastReceiver() {
             override fun onReceive(context: Context?,intent:Intent) {
                 matchList = intent.getSerializableExtra(Communication.COM_MESSAGE) as ArrayList<Games>
-                updateData(matchList)
+               // listeDetailsParties= intent.getSerializableExtra(Communication.COM_MESSAGE_DETAIL) as ArrayList<DetailGame>
+                updateData(matchList,listeDetailsParties)
+
             }
 
         }
@@ -154,11 +156,13 @@ class GameListActivity : AppCompatActivity() {
         val manager = LinearLayoutManager(this)
         recyclerView.layoutManager = manager
         recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = GameRecyclerViewAdapter(this,matchList, twoPane)
+        recyclerView.adapter = GameRecyclerViewAdapter(this,matchList,
+    //        listeDetailsParties,
+            twoPane)
         recyclerView.setAdapter( recyclerView.adapter)
     }
 
-    fun updateData(listeParties:ArrayList<Games>) {
+    fun updateData(listeParties:ArrayList<Games>,listdetail:ArrayList<DetailGame>) {
         //progressBar.setVisibility(View.INVISIBLE)
         if (listeParties == null)
         {
@@ -173,6 +177,7 @@ class GameListActivity : AppCompatActivity() {
     class GameRecyclerViewAdapter(
         private val parentActivity: GameListActivity,
         private val values: ArrayList<Games>,
+       // private val valuesDetail: ArrayList<DetailGame>,
         private val twoPane: Boolean
     ) :
         RecyclerView.Adapter<GameRecyclerViewAdapter.ViewHolder>() {
@@ -209,9 +214,16 @@ class GameListActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val gameID = values[position]
+            //val gameDetailGame= valuesDetail[gameID.id]
 
-            //var game=getDetailsGame(gameID.id)
 
+/*
+            holder.score1.text=gameDetailGame.team1Goals.toString()
+            holder.score2.text=gameDetailGame.team2Goals.toString()
+            holder.NomEquipe1.text=gameDetailGame.team1Name
+            holder.NomEquipe2.text=gameDetailGame.team2Name
+            holder.periode.text = gameDetailGame.isEnded.toString()
+*/
 
             holder.score1.text = gameID.team1Id.toString()
             holder.score2.text = gameID.team2Id.toString()
