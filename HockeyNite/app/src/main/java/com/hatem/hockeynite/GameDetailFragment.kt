@@ -1,21 +1,13 @@
 package com.hatem.hockeynite
 
-import Client
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
-import androidx.core.view.get
 import com.hatem.hockeynite.dummy.DummyContent
 import kotlinx.android.synthetic.main.activity_game_detail.*
-import kotlinx.android.synthetic.main.game_detail.*
 import kotlinx.android.synthetic.main.game_detail.view.*
-import java.net.InetAddress
-import java.net.UnknownHostException
 
 /**
  * A fragment representing a single Item detail screen.
@@ -34,11 +26,11 @@ class GameDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            if (it.containsKey(ARG_ITEM_ID)) {
+            if (it.containsKey(ARG_GAME_ID)) {
                 // Load the dummy content specified by the fragment
                 // arguments. In a real-world scenario, use a Loader
                 // to load content from a content provider.
-                item = DummyContent.ITEM_MAP[it.getString(ARG_ITEM_ID)]
+                item = DummyContent.ITEM_MAP[it.getString(ARG_GAME_ID)]
                 activity?.toolbar_layout?.title = item?.id
             }
         }
@@ -75,7 +67,7 @@ class GameDetailFragment : Fragment() {
          * The fragment argument representing the item ID that this fragment
          * represents.
          */
-        const val ARG_ITEM_ID = "item_id"
+        const val ARG_GAME_ID = "item_id"
     }
 
 }

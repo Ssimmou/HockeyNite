@@ -41,6 +41,7 @@
         </activity>
 
         <service android:name=".Communication.Communication" />
+        <service android:name=".Communication.GameDetailService" />
     </application>
 
 </manifest>

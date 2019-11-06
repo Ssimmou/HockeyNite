@@ -182,8 +182,9 @@ class Client {
         return DetailGame
     }
 
-    private fun play(idGame: Int, choice: Int, bet: Float) {
+    fun play(idGame: Int, choice: Int, bet: Float) : String {
         var bet = Bets(0, idGame, choice, bet)
+        var message=""
         val sClient = Socket("localhost", tcpServeurPort)
 
         var `is` = DataInputStream(sClient.getInputStream())
@@ -242,6 +243,8 @@ class Client {
             }
         }
         sClient.close()
+
+        return "55555"
     }
 
 }

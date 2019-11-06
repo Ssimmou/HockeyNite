@@ -14,23 +14,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.ThemedSpinnerAdapter
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hatem.hockeynite.Communication.Communication
-import com.hatem.hockeynite.Models.DetailGame
 import com.hatem.hockeynite.Models.Games
-import kotlinx.android.synthetic.main.activity_game_list.*
 
 import kotlinx.android.synthetic.main.game_list_content.view.*
 import kotlinx.android.synthetic.main.game_list.*
 import kotlinx.android.synthetic.main.game_list.item_detail_container
 import kotlinx.android.synthetic.main.game_list.swipelist
-import kotlinx.coroutines.*
-import java.lang.Runnable
-import java.net.InetAddress
-import java.net.UnknownHostException
 
 /**
  * An activity representing a list of Pings. This activity
@@ -83,10 +76,10 @@ class GameListActivity : AppCompatActivity() {
                 matchList = intent.getSerializableExtra(Communication.COM_MESSAGE) as ArrayList<Games>
                 updateData(matchList)
             }
+
         }
 
-        comService=Intent(applicationContext, Communication::class.java)
-        startService(comService)
+
 
 
 
@@ -94,21 +87,28 @@ class GameListActivity : AppCompatActivity() {
     }
 
 
+
+
      override fun onStart() {
         super.onStart()
+         comService=Intent(applicationContext, Communication::class.java)
+         startService(comService)
+
         LocalBroadcastManager.getInstance(this).registerReceiver((broadcastReceiver),
             IntentFilter(Communication.COM_RESULT)
         )
+
     }
 
     override fun onStop() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
         super.onStop()
-
+        stopService(comService)
     }
 
     override fun onRestart() {
         super.onRestart()
+
         LocalBroadcastManager.getInstance(this).registerReceiver((broadcastReceiver),
             IntentFilter(Communication.COM_RESULT))
 
@@ -116,18 +116,35 @@ class GameListActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        LocalBroadcastManager.getInstance(this).registerReceiver((broadcastReceiver),
+            IntentFilter(Communication.COM_RESULT)
+        )
         super.onResume()
-
         setupRecyclerView(item_list)
 
     }
 
     override fun onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+
         super.onPause()
     }
+
+    override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+        super.onDestroy()
+    }
+
     private fun refreshAction() {
         swipelist?.setBackgroundColor(Color.GRAY)
+        updateList()
         setupRecyclerView(item_list)
+    }
+
+    private fun updateList() {
+        stopService(comService)
+        comService=Intent(applicationContext, Communication::class.java)
+        startService(comService)
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
@@ -168,7 +185,7 @@ class GameListActivity : AppCompatActivity() {
                 if (twoPane) {
                     val fragment = GameDetailFragment().apply {
                         arguments = Bundle().apply {
-                            putInt(GameDetailFragment.ARG_ITEM_ID, Game.id)
+                            putInt(GameDetailFragment.ARG_GAME_ID, Game.id)
                         }
                     }
                     parentActivity.supportFragmentManager
@@ -177,7 +194,7 @@ class GameListActivity : AppCompatActivity() {
                         .commit()
                 } else {
                     val intent = Intent(v.context, GameDetailActivity::class.java).apply {
-                        putExtra(GameDetailFragment.ARG_ITEM_ID, Game.id)
+                        putExtra(GameDetailFragment.ARG_GAME_ID, Game.id)
                     }
                     v.context.startActivity(intent)
                 }
@@ -195,20 +212,13 @@ class GameListActivity : AppCompatActivity() {
 
             //var game=getDetailsGame(gameID.id)
 
-/*
-            holder.score1.text = game.team1Goals.toString()
-            holder.score2.text = game.team2Goals.toString()
-            holder.NomEquipe1.text = game.team1Name
-            holder.NomEquipe2.text = game.team2Name
-            holder.periode.text = game.date.toString()
-
- */
 
             holder.score1.text = gameID.team1Id.toString()
             holder.score2.text = gameID.team2Id.toString()
-            holder.NomEquipe1.text = gameID.team1Id.toString()
-            holder.NomEquipe2.text = gameID.team2Id.toString()
-            holder.periode.text = gameID.date.toString()
+            holder.NomEquipe1.text = setNomEquipe(gameID.team1Id)
+            holder.NomEquipe2.text = setNomEquipe(gameID.team2Id)
+            holder.periode.text = setPeriode(gameID.ended,gameID)
+
 
             with(holder.itemView) {
                 tag = gameID
@@ -225,6 +235,32 @@ class GameListActivity : AppCompatActivity() {
             val NomEquipe2: TextView = view.Nom_equipe2
             val periode: TextView = view.periode
 
+
+        }
+        fun setNomEquipe(idEquipe: Int?): String{
+            if(idEquipe== 1)
+                return "barca"
+            else if (idEquipe==8)
+                return "Getafe"
+            else if (idEquipe==3)
+                return "Real Madrid"
+            else if (idEquipe==7)
+                return "Valdolid"
+            else if (idEquipe==6)
+                return "Mallorca"
+            else if (idEquipe==9)
+                return "Atletico"
+            else
+                return "equipe"
+        }
+        fun setPeriode(periode: Int?,game: Games ): String{
+
+            if(periode==1)
+                return "FIN"
+            else if(periode==0)
+                return game.date.toDate().toString()
+           else
+                return ""
         }
     }
 
