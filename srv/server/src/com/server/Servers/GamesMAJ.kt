@@ -5,6 +5,10 @@ import Scope
 import com.example.Data.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.jetbrains.exposed.sql.Query
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -60,15 +64,33 @@ class GamesMAJ(var app : Scope) {
         }
     }
 
-    private fun endPeriod() {
+    private fun endPeriod(): String {
         println("Enter the game id : ")
+
         val gameId = sc.nextInt()
+        var res : Query? = null
+        var count = 0
+        transaction {
+            res = Period.select {
+                Period.gameId.eq(gameId)
+            }
+            for(row in res!!){
+                count++
+                //println(row[Period.id])
+            }
+        }
+        println(count)
+        if(count > 2){
+           print("you can't end period,it is grater than 2 the game should be ended")
+            return "error"
+        }
         Periods.periodEnded(gameId, false)
         if(app.list.containsKey(gameId as Integer)){
             for(socket in app.list.get(gameId as Integer)!!){
                 threadPool.execute(InformeChanges(socket, gameId, 0))
             }
         }
+        return "OK"
     }
 
     private fun addGoal() {

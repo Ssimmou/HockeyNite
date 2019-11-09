@@ -1,6 +1,9 @@
 package com.hatem.hockeynite
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
 import android.view.GestureDetector
@@ -9,8 +12,14 @@ import androidx.core.app.NavUtils
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.widget.Button
+import android.widget.Toast
 import androidx.core.view.GestureDetectorCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.hatem.hockeynite.Communication.GameDetailService
+import com.hatem.hockeynite.Models.DetailGame
 import kotlinx.android.synthetic.main.activity_game_detail.*
+import kotlinx.android.synthetic.main.activity_game_detail.item_detail_container
+import kotlinx.android.synthetic.main.activity_game_detail.swipelist
 
 /**
  * An activity representing a single Item detail screen. This
@@ -23,14 +32,22 @@ class GameDetailActivity : AppCompatActivity(),
 
 
     var gDetector: GestureDetectorCompat?=null
+    private lateinit var broadcastReceiver: BroadcastReceiver
+    private lateinit var gamedetail: ArrayList<DetailGame>
+    private var detService: Intent?= null
 
+    var gameID= 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_detail)
         setSupportActionBar(detail_toolbar)
+
+
+
         this.gDetector= GestureDetectorCompat(this,this)
         this.gDetector?.setOnDoubleTapListener(this)
 
+        GameDetailFragment.ARG_GAME_ID
 
         //Refresh
         swipelist.setOnRefreshListener{
@@ -43,13 +60,29 @@ class GameDetailActivity : AppCompatActivity(),
         // set on-click listener
         parier.setOnClickListener {
             val intent = Intent(this, PariActivity::class.java).apply {
-                putExtra("GameID", "ssss")
+                putExtra(PariActivity.GAME_ID, 1)
+                //putExtra("Equipe1",gamedetail[0].team1Name)
+                //putExtra("Equipe2",gamedetail[0].team2Name)
             }
+           // intent.getStringExtra("gameID")
             startActivity(intent)
         }
 
         // Show the Up button in the action bar.
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        broadcastReceiver = object: BroadcastReceiver() {
+            override fun onReceive(context: Context?,intent:Intent) {
+                if (intent.getSerializableExtra(GameDetailService.DET_MESSAGE) !=null)
+                    gamedetail= intent.getSerializableExtra(GameDetailService.DET_MESSAGE) as ArrayList<DetailGame>
+
+                //updateData(gamedetail)
+            }
+
+        }
+
+
+
 
 
         if (savedInstanceState == null) {
@@ -58,8 +91,8 @@ class GameDetailActivity : AppCompatActivity(),
             val fragment = GameDetailFragment().apply {
                 arguments = Bundle().apply {
                     putString(
-                        GameDetailFragment.ARG_ITEM_ID,
-                        intent.getStringExtra(GameDetailFragment.ARG_ITEM_ID)
+                        GameDetailFragment.ARG_GAME_ID,
+                        intent.getStringExtra(GameDetailFragment.ARG_GAME_ID)
                     )
                 }
             }
@@ -71,8 +104,71 @@ class GameDetailActivity : AppCompatActivity(),
 
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        detService=Intent(applicationContext, GameDetailService::class.java)
+        startService(detService)
+
+        LocalBroadcastManager.getInstance(this).registerReceiver((broadcastReceiver),
+            IntentFilter(GameDetailService.DET_RESULT)
+        )
+
+    }
+
+    override fun onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+        stopService(detService)
+
+        super.onStop()
+
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        stopService(detService)
+
+
+    }
+
+    override fun onResume() {
+        LocalBroadcastManager.getInstance(this).registerReceiver((broadcastReceiver),
+            IntentFilter(GameDetailService.DET_RESULT)
+        )
+
+
+        super.onResume()
+
+        // Affichage du statut d'avant-plan par Toast
+        Toast.makeText(this@GameDetailActivity,"HockeyNite - onResume",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+
+        // Affichage du statut d'avant-plan par Toast
+        Toast.makeText(this@GameDetailActivity,"HockeyNite - onPause",Toast.LENGTH_SHORT).show()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+        stopService(detService)
+
+        super.onDestroy()
+    }
+
+
+    fun updateData(){
+
+        stopService(detService)
+
+        detService=Intent(applicationContext, GameDetailService::class.java)
+        startService(detService)
+    }
     private fun refreshAction() {
         ConstraintLayout.setBackgroundColor(Color.RED)
+        updateData()
 
     }
 
@@ -84,12 +180,6 @@ class GameDetailActivity : AppCompatActivity(),
     override fun onOptionsItemSelected(item: MenuItem) =
         when (item.itemId) {
             android.R.id.home -> {
-                // This ID represents the Home or Up button. In the case of this
-                // activity, the Up button is shown. Use NavUtils to allow users
-                // to navigate up one level in the application structure. For
-                // more details, see the Navigation pattern on Android Design:
-                //
-                // http://developer.android.com/design/patterns/navigation.html#up-vs-back
 
                 NavUtils.navigateUpTo(this, Intent(this, GameListActivity::class.java))
                 true
@@ -126,33 +216,36 @@ class GameDetailActivity : AppCompatActivity(),
 
 
 
-    fun UpdateData(){
-        item_detail_container.setBackgroundColor(Color.YELLOW)
-    }
-
-
 
     override fun onLongPress(e: MotionEvent?) {
-        throw UnsupportedOperationException("Not yet implemented")
+        ConstraintLayout.setBackgroundColor(Color.RED)
     }
 
     override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        ConstraintLayout.setBackgroundColor(Color.GRAY)
+        return true
     }
 
     override fun onSingleTapUp(e: MotionEvent?): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        ConstraintLayout.setBackgroundColor(Color.GREEN)
+        return true
+
     }
 
     override fun onDoubleTapEvent(e: MotionEvent?): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        ConstraintLayout.setBackgroundColor(Color.MAGENTA)
+        return true
+
     }
 
     override fun onDoubleTap(e: MotionEvent?): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        ConstraintLayout.setBackgroundColor(Color.YELLOW)
+        return true
+
     }
 
     override fun onShowPress(e: MotionEvent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        ConstraintLayout.setBackgroundColor(Color.CYAN)
+
     }
 }

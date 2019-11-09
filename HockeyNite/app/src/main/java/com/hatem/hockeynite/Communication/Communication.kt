@@ -7,6 +7,8 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.hatem.hockeynite.GameListActivity
+import com.hatem.hockeynite.Models.DetailGame
 import com.hatem.hockeynite.Models.Games
 import com.hatem.hockeynite.R
 import java.net.InetAddress
@@ -17,8 +19,12 @@ class Communication: Service() {
     // est en train de s’exécuter ?
     private var runFlag = false
     // thread séparé qui effectue la MAJ
-    private var updater: Updater? = null
-    private val broadcaster = LocalBroadcastManager.getInstance(this)
+    private lateinit var updater: Updater
+   // private lateinit var updaterDetail: UpdaterDetail
+    private lateinit var broadcaster: LocalBroadcastManager
+    //var listeDetailsParties= ArrayList<DetailGame>()
+
+
     override fun onBind(intent:Intent): IBinder? {
         return null
     }
@@ -26,7 +32,9 @@ class Communication: Service() {
         super.onCreate()
         // créer le fil de MAJ
         // à la création du service
+        broadcaster= LocalBroadcastManager.getInstance(this)
         this.updater = Updater()
+        //this.updaterDetail= UpdaterDetail()
         Log.d(TAG, "onCreated")
     }
     fun sendResult(message: ArrayList<Games>?) {
@@ -41,9 +49,14 @@ class Communication: Service() {
         super.onStartCommand(intent, flags, startId)
         // démarrer le fil de MAJ
         // au démarrage du service
-       // if (this.updater.isAlive()) this.updater.stop() //TODO don't work
+        //if (runFlag == true)  //TODO don't work
         this.runFlag = true
-        this.updater?.start()
+        if(this.updater.isAlive) {
+            this.updater.interrupt()
+        }
+        else
+            this.updater.start()
+
         Log.d(TAG, "onStarted")
         return START_STICKY
     }
@@ -62,7 +75,7 @@ class Communication: Service() {
      */
     // note : AsynchTask pour les threads UI
     private inner class Updater:Thread("UpdaterService-Updater") {
-        public override fun run() { // méthode invoquée pour démarrer le fil
+        override fun run() { // méthode invoquée pour démarrer le fil
             val comService = this@Communication // réf. Sur le service
             while (comService.runFlag)
             { // MAJ via les méthode onStartCOmmand et onDestroy
@@ -71,23 +84,42 @@ class Communication: Service() {
                 {
                     /* Get DATA */
                     val commClient = Client()
-                    val adr: InetAddress
+                    //val adr: InetAddress
+                    var aHost: InetAddress
+                    val serveurPort = 6780
+                    val clientPort = 6779
                     try
                     {
-                        adr = InetAddress.getByName(getApplication().getSharedPreferences(getResources().getString(
-                            R.string.FileShared), Context.MODE_PRIVATE).getString(getResources().getString(R.string.Serveur_adresse), "192.168.1.1"))
+                        aHost = InetAddress.getByName("10.0.2.2")
+                        //adr = InetAddress.getByName(getApplication().getSharedPreferences(getResources().getString(
+                          //  R.string.FileShared), Context.MODE_PRIVATE).getString(getResources().getString(R.string.Serveur_adresse), "192.168.1.1"))
                     }
                     catch (e:Exception) {
                         sendResult(null!!)
                         return
                     }
                     // Placer les paramètres de communications
-                    commClient.setServeur(adr, 6780, 6779)
+                    commClient.setServeur(aHost, serveurPort, clientPort)
                     // Lecture de la liste des parties
+
                     val listeParties: ArrayList<Games>? = commClient.getListGames()
+
+                    //var listeDetailsParties= ArrayList<DetailGame>()
+                    //listeDetailsParties.add(commClient.getDetailsGame(listeParties[1].team1Id))
+                   /* for (i in 0..listeParties!!.size) {
+                        listeDetailsParties.add(commClient.getDetailsGame(listeParties[i].team1Id!!))
+                        listeDetailsParties.add(commClient.getDetailsGame(listeParties[i].team2Id!!))
+                    }
+
+                    */
+
+
+
+
+
                     sendResult(listeParties)
                     Log.d(TAG, "Updater ran")
-                    Thread.sleep(DELAY.toLong()) // s’endormir entre chaque mise à jour
+                    Thread.sleep(10000) // s’endormir entre chaque mise à jour
                 }
                 catch (e:InterruptedException) {
                     // exception est déclenchée lorsqu’on signale interrupt()
@@ -95,7 +127,9 @@ class Communication: Service() {
                 }
             }
         }
-    }// donner un nom au thread à des fins de debug
+    }
+
+    // donner un nom au thread à des fins de debug
     // Updater
     companion object {
         val TAG = "ComService"

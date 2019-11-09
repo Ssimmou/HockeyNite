@@ -1,7 +1,4 @@
 
-import android.app.Service
-import android.content.Intent
-import android.os.IBinder
 import com.google.gson.GsonBuilder
 
 import com.google.gson.internal.LinkedTreeMap
@@ -50,7 +47,7 @@ class Client {
         this.clientPort = clientPort
     }
 
-    fun getListGames(): ArrayList<Games>? {
+    fun getListGames(): ArrayList<Games> {
         aSocket = DatagramSocket(this.clientPort)
 
         val ask = this.adress?.let { Request().craftGetMatchList(it, this.serveurPort) }
@@ -74,19 +71,19 @@ class Client {
         var reply = unSerializeReply(datagram)
 
         var gameList: ArrayList<LinkedTreeMap<String, Int>> = reply.value as ArrayList<LinkedTreeMap<String, Int>>;
-        var List: ArrayList<Games>? = null
+        var list= ArrayList<Games>()
         var i: Int = 0
         for (i in 0..gameList.size - 1) {
-            var id = gameList.get(i).get("id") as Int
-            var team1Id = gameList.get(i).get("team1Id") as Int
-            var team2Id = gameList.get(i).get("team2Id") as Int
+            var id = gameList.get(i).get("id")!!.toDouble()
+            var team1Id = gameList.get(i).get("team1Id") as Double
+            var team2Id = gameList.get(i).get("team2Id") as Double
             var date = DateTime.parse(gameList.get(i).get("date") as String)
-            var ended= gameList.get(i).get("ended") as Int
+            var ended= gameList.get(i).get("ended") as Double
 
-            val game: Games = Games(id, team1Id,team1Id,date,ended)
+            val game: Games = Games(id.toInt(), team1Id.toInt(),team2Id.toInt(),date,ended.toInt())
 
-            if (List != null) {
-                List.add(game)
+            if (list != null) {
+                list.add(game)
             }
             println(Integer.toString(i + 1) + " - " + team1Id.toInt() + " vs " + team2Id.toInt() + " at " + date.toDate().hours + ":" + date.toDate().minutes + " = = " + date.toDate().timezoneOffset )
         }
@@ -105,7 +102,7 @@ class Client {
         }
 
  */
-        return List
+        return list
     }
 
     private fun displayMatchDetails(id: Int) {
@@ -133,7 +130,7 @@ class Client {
 
     }
 
-    private fun getDetailsGame(id: Int): DetailGame?{
+     fun getDetailsGame(id: Int): DetailGame{
         aSocket = DatagramSocket(this.clientPort)
         val ask = this.adress?.let { Request().craftGetMatchDetail(it, this.serveurPort, id) }
 
@@ -177,16 +174,23 @@ class Client {
             return null;
         println("The amount ? ")
         var amount = sc.nextFloat()
-        aSocket!!.close()
+
 
         play(id, choix, amount)
 
  */
+         try {
+             aSocket!!.close()
+         }catch (e: SocketException){
+                println("sockeet erreur cleint 185")
+         }
+
         return DetailGame
     }
 
-    private fun play(idGame: Int, choice: Int, bet: Float) {
+    fun play(idGame: Int, choice: Int, bet: Float) : String {
         var bet = Bets(0, idGame, choice, bet)
+        var message=""
         val sClient = Socket("localhost", tcpServeurPort)
 
         var `is` = DataInputStream(sClient.getInputStream())
@@ -245,6 +249,8 @@ class Client {
             }
         }
         sClient.close()
+
+        return "55555"
     }
 
 }
